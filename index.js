@@ -38,7 +38,7 @@ const research = (message) => {
 
     console.log('Not found, Best match: ' + matches.bestMatch.target + ' with a distance of ' + matches.bestMatch.rating);
 
-    if(matches.bestMatch.rating > 0.2) {
+    if(matches.bestMatch.rating > 0.3) {
         const bestMatches = matches.ratings.filter(match => Math.abs(match.rating - matches.bestMatch.rating) <= 0.2 && match.rating != 0);
         
         console.log("Best Matches: ", bestMatches);
@@ -69,11 +69,17 @@ bot.on('ready', async () => {
         }]
     });
 
+    const members =  bot.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b); 
+
     (((bot.guilds.cache.get('842010158083211274')).members.cache.get('238684010182606850') || await (bot.guilds.cache.get('842010158083211274')).members.fetch('238684010182606850'))).send({
         embeds: [new MessageEmbed()
             .setTitle(String('Toc Toc !'))
             .setColor(String('#33cc00'))
             .setDescription(String('Coucou M0NS, je suis réveillé (une nouvelle fois) !'))
+            .setFields({
+                name: "Nombre de membres",
+                value: "Je suis présent sur des serveurs avec :" + members + " membres"
+            })
         ]
     });
 })
@@ -289,7 +295,7 @@ bot.on('interactionCreate', async (interaction) => {
                                     'Utilises ``/learn`` pour m\'apprendre quoi répondre à la phrase que tu souhaites.' + '\n' +
                                     '' + '\n' +
                                     'Attention, tu peux tomber sur **n\'importe quoi** !' + '\n' +
-                                    'Sois averti. Si tu constates une réponse qui n\'aurait pas lieu d\'être, contactes mon créateur **M0NS#3608** ')))
+                                    'Sois averti. Si tu constates une réponse qui n\'aurait pas lieu d\'être, contacte mon créateur **M0NS#3608** ')))
                             ]
                         });
 
@@ -414,7 +420,9 @@ bot.on('interactionCreate', async (interaction) => {
 
 bot.on('messageCreate', async (message) => {   
 
-    if(message.channel.type != 'DM' && message.channelId != database.channels[message.guild.id]) {
+    if(message.author.bot) return;
+
+    if(message.channel.type != 'DM' && message.channelId != database.channels[message.guild.id] && !message.content.includes('@')) {
         if(message.reference && cleanUp(message.content).toLowerCase().length > 0) {
             const replyToGuild = bot.guilds.resolve(message.reference.guildId);
             if(replyToGuild) {
@@ -423,7 +431,7 @@ bot.on('messageCreate', async (message) => {
                 if(replyToChannel) {
                     const replyToMessage = replyToChannel.messages.resolve(message.reference.messageId);   
                     
-                    if(cleanUp(replyToMessage.content).toLowerCase().length > 0) {
+                    if(cleanUp(replyToMessage.content).toLowerCase().length > 0 && !replyToMessage.author.bot && !replyToMessage.content.includes('@')) {
                         if(!Array.isArray(database.messages[cleanUp(replyToMessage.content).toLowerCase()])) {
                             database.messages[cleanUp(replyToMessage.content).toLowerCase()] = [];
                         }  

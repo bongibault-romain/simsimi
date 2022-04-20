@@ -1,11 +1,13 @@
 {
   "channels": {
     "842010158083211274": "842013147652947968",
-    "848281422427193374": "966367568803823646"
+    "848281422427193374": "966367568803823646",
+    "951921044388741160": "951933028563812482"
   },
   "setupMessages": {
     "842010158083211274": "966125653315444806",
-    "848281422427193374": "966367610541334578"
+    "848281422427193374": "966367610541334578",
+    "951921044388741160": "966377595887308840"
   },
   "messages": {
     "1": [
@@ -31,7 +33,8 @@
       "Prout"
     ],
     "caca": [
-      "Pipi <:drops_pee:606572610662432772>"
+      "Pipi <:drops_pee:606572610662432772>",
+      "prout"
     ],
     "salut": [
       "Salut !",
@@ -272,7 +275,8 @@
     ],
     "je t'aime": [
       "Pas moi, sale moche",
-      "Ouais mais envoie fesse d'abord"
+      "Ouais mais envoie fesse d'abord",
+      "Moi aussi mon bébou"
     ],
     "<:wolfylove:854365245307748352>": [
       "<3<3"
@@ -806,6 +810,51 @@
     ],
     "la merde de wolfy": [
       "loseq"
+    ],
+    "a ok": [
+      "prout"
+    ],
+    "mdrr": [
+      "😂 jpp"
+    ],
+    "mp ?": [
+      "Message privé"
+    ],
+    "c'est quoi une fesse ?": [
+      "La meilleure invention de l'homme !"
+    ],
+    "mp": [
+      "MoonPass"
+    ],
+    "give moonpass": [
+      "Nan"
+    ],
+    "je t'emmerde": [
+      "va te faire foutre"
+    ],
+    "maizeena": [
+      "Je préfère la farine"
+    ],
+    "uai": [
+      "Ouais ouais"
+    ],
+    "merci": [
+      "Bah de rien"
+    ],
+    "quel con": [
+      "Mais grave"
+    ],
+    "grjoegjerjgjverjgergerhfirejf": [
+      "fkejngerhgrehbgnzfrobfzr"
+    ],
+    "euuuuuuuuuuuuuuuuuuuuh": [
+      "EUUUUUUUUUUUUUUUUUUUUUH"
+    ],
+    "aaaaaaaaaaaaaaaaah": [
+      "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEH"
+    ],
+    "où est ma mère": [
+      "Dans ma cave"
     ]
   }
 }
