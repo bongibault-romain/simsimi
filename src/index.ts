@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 const { MessageEmbed } = Discord;
-const fs = require('fs');
-const stringSimilarity = require("string-similarity");
+import fs from 'fs';
+import stringSimilarity from 'string-similarity';
 
 const sample_words = ['et', 'ou', 'de', 'la', 'les', 'des', 'dont', 'dans', 'en', 'j\'', 't\''];
 
@@ -15,16 +15,16 @@ require('dotenv').config();
 const maxLength = 400; //! max length
 
 // Capitalize a message after each . ? and !
-function capitalize(input, lowercaseBefore) {
+function capitalize(input: string, lowercaseBefore: boolean = false) {
     // input = ( input === undefined || input === null ) ? '' : input;
     // if (lowercaseBefore) { input = input.toLowerCase(); }
-    // return input.toString().replace( /(^|\. *)([a-z])/g, function(match, separator, char) {
+    // return input.to().replace( /(^|\. *)([a-z])/g, function(match, separator, char) {
     //     return separator + char.toUpperCase();
     // });
     return input;
 }
 
-const research = (message) => {
+const research = (message: string) => {
     if(Array.isArray(database.messages[message]) && database.messages[message].length > 0) {
         return database.messages[message];
     }
@@ -61,7 +61,7 @@ const bot = new Discord.Client({
 });
 
 bot.on('ready', async () => {
-    bot.user.setPresence({
+    bot.user?.setPresence({
         status: "online",
         activities: [{
             name: 'vos messages !',
@@ -73,29 +73,29 @@ bot.on('ready', async () => {
 
     (((bot.guilds.cache.get('842010158083211274')).members.cache.get('238684010182606850') || await (bot.guilds.cache.get('842010158083211274')).members.fetch('238684010182606850'))).send({
         embeds: [new MessageEmbed()
-            .setTitle(String('Toc Toc !'))
-            .setColor(String('#33cc00'))
-            .setDescription(String('Coucou M0NS, je suis réveillé (une nouvelle fois) !'))
+            .setTitle(('Toc Toc !'))
+            .setColor(('#33cc00'))
+            .setDescription(('Coucou M0NS, je suis réveillé (une nouvelle fois) !'))
             .setFields({
                 name: "Nombre de membres",
-                value: "Je suis présent sur des serveurs avec :" + members + " membres"
+                value: "Je suis présent sur des serveurs avec : **" + members + "** membres"
             })
         ]
     });
 })
 
-let fastLearnsMessagesIds = [];
+let fastLearnsMessagesIds: any = [];
 
-const cleanUp = (message) => {
+const cleanUp = (message: string) => {
     return message.replaceAll('`', '').trim();
 }
 
-const isVoid = (message) => {
+const isVoid = (message: string) => {
     return message.replaceAll('*', '').replaceAll('_', '').trim() == '';
 }
 
 
-const hasNitroEmotes = (message) => {
+const hasNitroEmotes = (message: string) => {
     if (message.indexOf(':') + 1 != message.lastIndexOf(':') + 1) {
         return true;
     }
@@ -103,13 +103,13 @@ const hasNitroEmotes = (message) => {
     return false;
 }
 
-const learn = async (question, response, send) => {
+const learn = async (question: string, response: string, send: (message: any) => any) => {
     if (response.length > maxLength && question.length > maxLength) {
         send({
             embeds: [new MessageEmbed()
-                .setTitle(String('Oups !'))
-                .setColor(String('#cc0000'))
-                .setDescription(String((['Ta question et ta réponse sont trop longues.' + '\n' +
+                .setTitle(('Oups !'))
+                .setColor(('#cc0000'))
+                .setDescription(((['Ta question et ta réponse sont trop longues.' + '\n' +
                     'Retentes avec quelque chose de moins de **', maxLength, '** caractères !'
                 ].join(''))))
             ]
@@ -117,9 +117,9 @@ const learn = async (question, response, send) => {
     } else if (response.length > maxLength) {
         send({
             embeds: [new MessageEmbed()
-                .setTitle(String('Oups !'))
-                .setColor(String('#cc0000'))
-                .setDescription(String((['Ta réponse est trop longue.' + '\n' +
+                .setTitle(('Oups !'))
+                .setColor(('#cc0000'))
+                .setDescription(((['Ta réponse est trop longue.' + '\n' +
                     'Retentes avec quelque chose de moins de **', maxLength, '** caractères !'
                 ].join(''))))
             ]
@@ -127,9 +127,9 @@ const learn = async (question, response, send) => {
     } else if (question.length > maxLength) {
         send({
             embeds: [new MessageEmbed()
-                .setTitle(String('Oups !'))
-                .setColor(String('#cc0000'))
-                .setDescription(String((['Ta question est trop longue.' + '\n' +
+                .setTitle(('Oups !'))
+                .setColor(('#cc0000'))
+                .setDescription(((['Ta question est trop longue.' + '\n' +
                     'Retentes avec quelque chose de moins de **', maxLength, '** caractères !'
                 ].join(''))))
             ]
@@ -139,27 +139,27 @@ const learn = async (question, response, send) => {
         if(question.includes('@') && response.includes('@')) {
             send({
                 embeds: [new MessageEmbed()
-                    .setTitle(String('Oups !'))
-                    .setColor(String('#cc0000'))
-                    .setDescription(String('Ta question et ta réponse ne peuvent contenir d\'``@`` !'))
+                    .setTitle(('Oups !'))
+                    .setColor(('#cc0000'))
+                    .setDescription(('Ta question et ta réponse ne peuvent contenir d\'``@`` !'))
                 ]
             });
         } else if(question.includes('@') ) {
 
             send({
                 embeds: [new MessageEmbed()
-                    .setTitle(String('Oups !'))
-                    .setColor(String('#cc0000'))
-                    .setDescription(String('Ta question ne peut contenir d\'``@`` !'))
+                    .setTitle(('Oups !'))
+                    .setColor(('#cc0000'))
+                    .setDescription(('Ta question ne peut contenir d\'``@`` !'))
                 ]
             });
         } else if( response.includes('@')) {
 
             send({
                 embeds: [new MessageEmbed()
-                    .setTitle(String('Oups !'))
-                    .setColor(String('#cc0000'))
-                    .setDescription(String('Ta réponse ne peut contenir d\'``@`` !'))
+                    .setTitle(('Oups !'))
+                    .setColor(('#cc0000'))
+                    .setDescription(('Ta réponse ne peut contenir d\'``@`` !'))
                 ]
             });
         } else {
@@ -167,18 +167,18 @@ const learn = async (question, response, send) => {
             if (isVoid(question) && isVoid(response)) {
                 send({
                     embeds: [new MessageEmbed()
-                        .setTitle(String('Oups !'))
-                        .setColor(String('#cc0000'))
-                        .setDescription(String(('Ta question et ta réponse sont vides !' + '\n' +
+                        .setTitle(('Oups !'))
+                        .setColor(('#cc0000'))
+                        .setDescription((('Ta question et ta réponse sont vides !' + '\n' +
                             'Je ne peux pas rien apprendre...')))
                     ]
                 });
             } else if (isVoid(question)) {
                 send({
                     embeds: [new MessageEmbed()
-                        .setTitle(String('Oups !'))
-                        .setColor(String('#cc0000'))
-                        .setDescription(String(('Ta question est vide !' + '\n' +
+                        .setTitle(('Oups !'))
+                        .setColor(('#cc0000'))
+                        .setDescription((('Ta question est vide !' + '\n' +
                             'Je ne peux pas rien apprendre...')))
                     ]
                 });
@@ -186,9 +186,9 @@ const learn = async (question, response, send) => {
             } else if (isVoid(response)) {
                 send({
                     embeds: [new MessageEmbed()
-                        .setTitle(String('Oups !'))
-                        .setColor(String('#cc0000'))
-                        .setDescription(String(('Ta réponse est vide !' + '\n' +
+                        .setTitle(('Oups !'))
+                        .setColor(('#cc0000'))
+                        .setDescription((('Ta réponse est vide !' + '\n' +
                             'Je ne peux pas rien répondre...')))
                     ]
                 });
@@ -198,9 +198,9 @@ const learn = async (question, response, send) => {
                 if (Array.isArray(database.messages[question.toLowerCase()]) && database.messages[question.toLowerCase()].includes(response)) {
                     send({
                         embeds: [new MessageEmbed()
-                            .setTitle(String('Oups !'))
-                            .setColor(String('#cc0000'))
-                            .setDescription(String('J\'ai déjà appris à répondre cela face à cette question.'))
+                            .setTitle(('Oups !'))
+                            .setColor(('#cc0000'))
+                            .setDescription(('J\'ai déjà appris à répondre cela face à cette question.'))
                         ]
                     });
                 } else {
@@ -211,9 +211,9 @@ const learn = async (question, response, send) => {
                         if (database.messages[question.toLowerCase()].length == 1) {
                             send({
                                 embeds: [new MessageEmbed()
-                                    .setTitle(String('D\'accord !'))
-                                    .setColor(String('#ffcc00'))
-                                    .setDescription(String((['Désormais, lorsque l\'on me demandera "``', question, '``", je répondrai "``', response, '``" !' + '\n' + (
+                                    .setTitle(('D\'accord !'))
+                                    .setColor(('#ffcc00'))
+                                    .setDescription(((['Désormais, lorsque l\'on me demandera "``', question, '``", je répondrai "``', response, '``" !' + '\n' + (
                                         
                                         hasNitroEmotes(response) ? ('\n' +
                                         '' + '\n' +
@@ -226,9 +226,9 @@ const learn = async (question, response, send) => {
     
                             send({
                                 embeds: [new MessageEmbed()
-                                    .setTitle(String('D\'accord !'))
-                                    .setColor(String('#ffcc00'))
-                                    .setDescription(String((['Désormais, lorsque l\'on me demandera "``', question, '``", en plus d\'autres réponses, je répondrai "``', response, '``" !' + (
+                                    .setTitle(('D\'accord !'))
+                                    .setColor(('#ffcc00'))
+                                    .setDescription(((['Désormais, lorsque l\'on me demandera "``', question, '``", en plus d\'autres réponses, je répondrai "``', response, '``" !' + (
                                         
                                         hasNitroEmotes(response) ? ('\n' +
                                         '' + '\n' +
@@ -248,7 +248,7 @@ const learn = async (question, response, send) => {
 }
 
 bot.on('interactionCreate', async (interaction) => {
-    const member = interaction.guild.members.resolve(interaction.member.user.id);
+    const member = interaction.guild?.members.resolve(interaction.member.user.id);
 
     if (interaction.isCommand()) {
         if (interaction.commandName == "setup") {
@@ -260,9 +260,9 @@ bot.on('interactionCreate', async (interaction) => {
                     if (database.channels[interaction.guildId] == interaction.channelId) {
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Oups !'))
-                                .setColor(String('#cc0000'))
-                                .setDescription(String('Le salon Simsimi est déjà défini à celui-ci !'))
+                                .setTitle(('Oups !'))
+                                .setColor(('#cc0000'))
+                                .setDescription(('Le salon Simsimi est déjà défini à celui-ci !'))
                             ]
                         });
                     } else {
@@ -279,16 +279,16 @@ bot.on('interactionCreate', async (interaction) => {
 
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Modification effectuée !'))
-                                .setColor(String('#33cc00'))
-                                .setDescription(String((['Désormais, je discuterai avec les membres dans **', interaction.channel, '** !'].join(''))))
+                                .setTitle(('Modification effectuée !'))
+                                .setColor(('#33cc00'))
+                                .setDescription(((['Désormais, je discuterai avec les membres dans **', interaction.channel, '** !'].join(''))))
                             ]
                         });
                         const m = await interaction.channel.send({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Bonjour !'))
-                                .setColor(String('#ffcc00'))
-                                .setDescription(String(('Je suis **Simsimi**. Discutons ensemble !' + '\n' +
+                                .setTitle(('Bonjour !'))
+                                .setColor(('#ffcc00'))
+                                .setDescription((('Je suis **Simsimi**. Discutons ensemble !' + '\n' +
                                     'Il te suffit d\'envoyer des messages dans ce salon.' + '\n' +
                                     '' + '\n' +
                                     'Tu peux aussi m\'apprendre de nouvelles choses !' + '\n' +
@@ -310,8 +310,8 @@ bot.on('interactionCreate', async (interaction) => {
                     if (database.channels[interaction.guildId]) {
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Suppression effectuée !'))
-                                .setColor(String('#33cc00'))
+                                .setTitle(('Suppression effectuée !'))
+                                .setColor(('#33cc00'))
                                 .setDescription(['Je ne pourrai plus discuter avec les membres dans le salon **', bot.channels.resolve(database.channels[interaction.guildId]), '**.'].join(''))
                             ]
                         });
@@ -330,9 +330,9 @@ bot.on('interactionCreate', async (interaction) => {
                     } else {
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Oups !'))
-                                .setColor(String('#cc0000'))
-                                .setDescription(String(('Il n\'y a pas de salon Simsimi défini sur ce serveur.' + '\n' +
+                                .setTitle(('Oups !'))
+                                .setColor(('#cc0000'))
+                                .setDescription((('Il n\'y a pas de salon Simsimi défini sur ce serveur.' + '\n' +
                                     'Utilises ``/setup here`` pour en définir un.')))
                             ]
                         });
@@ -343,17 +343,17 @@ bot.on('interactionCreate', async (interaction) => {
             } else {
                 await interaction.reply({
                     embeds: [new MessageEmbed()
-                        .setTitle(String('Oups !'))
-                        .setColor(String('#cc0000'))
-                        .setDescription(String('Seuls les administrateurs du serveur peuvent exécuter cette commande.'))
+                        .setTitle(('Oups !'))
+                        .setColor(('#cc0000'))
+                        .setDescription(('Seuls les administrateurs du serveur peuvent exécuter cette commande.'))
                     ]
                 });
             }
         }
 
         if (interaction.commandName == "learn") {
-            const question = cleanUp(interaction.options.getString('question'));
-            const response = cleanUp(interaction.options.getString('reponse'));
+            const question = cleanUp(interaction.options.get('question'));
+            const response = cleanUp(interaction.options.get('reponse'));
 
             console.log('[Learn] Learned response "',response,'" for question "',question,'" from user ', interaction.member.user.username,'.')
 
@@ -363,14 +363,14 @@ bot.on('interactionCreate', async (interaction) => {
         }
 
         if(interaction.commandName == "get") {
-            const question = cleanUp(interaction.options.getString('question'));
+            const question = cleanUp(interaction.options.get('question'));
 
             if(question.length > maxLength) {
                 await interaction.reply({
                     embeds: [new MessageEmbed()
-                        .setTitle(String('Oups !'))
-                        .setColor(String('#cc0000'))
-                        .setDescription(String((['Ta question est trop longue.' + '\n' +
+                        .setTitle(('Oups !'))
+                        .setColor(('#cc0000'))
+                        .setDescription(((['Ta question est trop longue.' + '\n' +
                             'Je ne peux pas apprendre de phrase qui dépasse les **', maxLength, '** caractères !'
                         ].join(''))))
                     ]
@@ -380,9 +380,9 @@ bot.on('interactionCreate', async (interaction) => {
                 if(isVoid(question)) {
                     await interaction.reply({
                         embeds: [new MessageEmbed()
-                            .setTitle(String('Oups !'))
-                            .setColor(String('#cc0000'))
-                            .setDescription(String(('Ta question est vide !' + '\n' +
+                            .setTitle(('Oups !'))
+                            .setColor(('#cc0000'))
+                            .setDescription((('Ta question est vide !' + '\n' +
                                 'Je ne peux pas avoir rien appris...')))
                         ]
                     });
@@ -393,18 +393,18 @@ bot.on('interactionCreate', async (interaction) => {
 
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String((['La question "**', question, '**" est liée à :'].join(''))))
-                                .setColor(String('#3366ff'))
-                                .setDescription(String(([r].join(''))))
+                                .setTitle(((['La question "**', question, '**" est liée à :'].join(''))))
+                                .setColor(('#3366ff'))
+                                .setDescription((([r].join(''))))
                             ]
                         });
                     } else {
                         // TODO: research
                         await interaction.reply({
                             embeds: [new MessageEmbed()
-                                .setTitle(String('Oups !'))
-                                .setColor(String('#cc0000'))
-                                .setDescription(String('Cette question n\'est pas présente dans ma mémoire.'))
+                                .setTitle(('Oups !'))
+                                .setColor(('#cc0000'))
+                                .setDescription(('Cette question n\'est pas présente dans ma mémoire.'))
                             ]
                         });
                     }
@@ -447,13 +447,13 @@ bot.on('messageCreate', async (message) => {
     }
 
     if(message.reference) {
-        const m = fastLearnsMessagesIds.find((mess) => mess.messageId == message.reference.messageId);
+        const m = fastLearnsMessagesIds.find((mess: any) => mess.messageId == message.reference?.messageId);
         
         if(m) {
             console.log('[Learn] Learned response "',cleanUp(message.content),'" for question "',cleanUp(m.question),'" from user ', message.author.username,'.')
 
             learn(cleanUp(m.question), cleanUp(message.content), async (m) => {
-                fastLearnsMessagesIds = fastLearnsMessagesIds.filter((a) => a.messageId != message.reference.messageId);
+                fastLearnsMessagesIds = fastLearnsMessagesIds.filter((a: any) => a.messageId != message.reference?.messageId);
 
                 await message.reply(m)
             });
@@ -462,15 +462,15 @@ bot.on('messageCreate', async (message) => {
 
     } 
     
-    if(message.mentions.users.has(bot.user.id) && !message.reference) {
+    if(bot.user?.id && message.mentions.users.has(bot.user.id) && !message.reference) {
         message.react('💬');
 
-        if (!database.channels[message.guildId]) {
+        if (message.guildId && !database.channels[message.guildId]) {
             message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setTitle(String((['Salut ', message.member.user.username, ' !'].join(''))))
-                    .setColor(String('#ffcc00'))
-                    .setDescription(String(('Tu cherches une liste des commandes ?' + '\n' +
+                    .setTitle(((['Salut ', message.member?.user.username, ' !'].join(''))))
+                    .setColor(('#ffcc00'))
+                    .setDescription((('Tu cherches une liste des commandes ?' + '\n' +
                         'Tapes ``/`` pour trouver ton bonheur !' + '\n' +
                         '' + '\n' +
                         'Tu ne peux pas encore discuter avec moi sur ce serveur car les administrateurs n\'ont pas encore défini de **salon Simsimi** !' + '\n' +
@@ -482,18 +482,18 @@ bot.on('messageCreate', async (message) => {
                         'Tu peux donc tomber sur **n\'importe quoi** ! Fais attention !' + '\n' +
                         '' + '\n' +
                         'Si tu rencontres un message que tu juges inapproprié, tu peux le signaler à mon créateur **M0NS#3608**.')))
-                        .setFooter('Je suis présent sur ' + bot.guilds.size + ' serveurs !')
+                        .setFooter('Je suis présent sur ' + bot.guilds.cache.size + ' serveurs !')
                 ]
             });
         } else {
             await message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setTitle(String((['Salut ', message.member.user.username, ' !'].join(''))))
-                    .setColor(String('#ffcc00'))
-                    .setDescription(String((['Tu cherches une liste des commandes ?' + '\n' +
+                    .setTitle(((['Salut ', message.member?.user.username, ' !'].join(''))))
+                    .setColor(('#ffcc00'))
+                    .setDescription(((['Tu cherches une liste des commandes ?' + '\n' +
                         'Tapes ``/`` pour trouver ton bonheur !' + '\n' +
                         '' + '\n' +
-                        'Tu peux discuter avec moi sur ce serveur dans le salon **', bot.channels.resolve(database.channels[message.guildId]), '**.' + '\n' +
+                        'Tu peux discuter avec moi sur ce serveur dans le salon **', message.guildId ? bot.channels.resolve(database.channels[message.guildId]) : '', '**.' + '\n' +
                         '' + '\n' +
                         '' + '\n' +
                         'Mon fonctionnement est simple : n\'importe qui peut m\'apprendre quoi répondre à n\'importe quel message !' + '\n' +
@@ -503,22 +503,21 @@ bot.on('messageCreate', async (message) => {
                     ].join(''))))
                     .setFooter({
                         text: 'Je suis présent sur ' + bot.guilds.cache.size + ' serveurs !',
-                        icon_url: bot.user.avatarURL()
                     })
                 ]
             });
         }
     } else {
         
-        if((message.channelId == database.channels[message.guildId] || message.channel.type == 'DM') && !message.author.bot && !message.content.includes('@')) {
+        if((message.guildId && message.channelId == database.channels[message.guildId] || message.channel.type == 'DM') && !message.author.bot && !message.content.includes('@')) {
         const question = cleanUp(message.content);
 
         if(question.length > maxLength) {
             await message.reply({
                 embeds: [new MessageEmbed()
-                    .setTitle(String('Oups !'))
-                    .setColor(String('#cc0000'))
-                    .setDescription(String((['Ta question est trop longue.' + '\n' +
+                    .setTitle(('Oups !'))
+                    .setColor(('#cc0000'))
+                    .setDescription(((['Ta question est trop longue.' + '\n' +
                         'Je ne peux pas apprendre de phrase qui dépasse les **', maxLength, '** caractères !'
                     ].join(''))))
                 ]
@@ -529,18 +528,18 @@ bot.on('messageCreate', async (message) => {
                 if(message.content.length == 0) {
                     message.channel.send({
                         embeds: [new MessageEmbed()
-                            .setTitle(String('Oh !'))
-                            .setColor(String('#6633ff'))
-                            .setDescription(String(('ça à l\'air cool ce que tu m\'envoie !' + '\n' +
+                            .setTitle(('Oh !'))
+                            .setColor(('#6633ff'))
+                            .setDescription((('ça à l\'air cool ce que tu m\'envoie !' + '\n' +
                                 'Cependant, je ne sais que lire du texte pour le moment...')))
                         ]
                     });
                 } else {
                     message.channel.send({
                         embeds: [new MessageEmbed()
-                            .setTitle(String('Oups !'))
-                            .setColor(String('#cc0000'))
-                            .setDescription(String(('Ton message est vide.' + '\n' +
+                            .setTitle(('Oups !'))
+                            .setColor(('#cc0000'))
+                            .setDescription((('Ton message est vide.' + '\n' +
                                 'Je ne sais pas quoi y répondre !')))
                         ]
                     });
@@ -562,9 +561,9 @@ bot.on('messageCreate', async (message) => {
                     // TODO: research
                     const flm = await message.channel.send({
                         embeds: [new MessageEmbed()
-                            .setTitle(String((['Hey ', message.author.username, ' !'].join(''))))
-                            .setColor(String('#3333ff'))
-                            .setDescription(String(('Je ne sais pas quoi répondre à cela. Peux-tu me l\'apprendre ?' + '\n' +
+                            .setTitle(((['Hey ', message.author.username, ' !'].join(''))))
+                            .setColor(('#3333ff'))
+                            .setDescription((('Je ne sais pas quoi répondre à cela. Peux-tu me l\'apprendre ?' + '\n' +
                                 '' + '\n' +
                                 '**Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l\'apprendre.' + '\n' +
                                 '' + '\n' +
