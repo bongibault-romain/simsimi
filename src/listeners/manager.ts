@@ -19,7 +19,7 @@ export default class ListenerManager {
     }
 
     private register(listener: Listener<any>) {
-        this.bot.client.on(listener.name, (...args) => listener.run(...args));
+        this.bot.client.on(listener.name, async (...args) => listener.run(...args));
     }
 
 }

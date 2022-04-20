@@ -31,8 +31,9 @@ export const get = async (question: string): Promise<string[]> => {
     const possibilities = stringSimilarity.findBestMatch(question, Object.keys(data.messages));
 
     if(possibilities.bestMatch.rating > 0.3) {
-        const result = possibilities.ratings.filter(r => Math.abs(possibilities.bestMatch.rating - r.rating) < 0.1).map(r => data.messages[r.target]);
+        const result = possibilities.ratings.filter(r => Math.abs(possibilities.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3).map(r => data.messages[r.target]);
 
+        console.log('match with', possibilities)
         console.log('result: ', result);
         
         return result[Math.round(Math.random() * (result.length - 1))];

@@ -37,7 +37,8 @@ const get = (question) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const possibilities = string_similarity_1.default.findBestMatch(question, Object.keys(data.messages));
     if (possibilities.bestMatch.rating > 0.3) {
-        const result = possibilities.ratings.filter(r => Math.abs(possibilities.bestMatch.rating - r.rating) < 0.1).map(r => data.messages[r.target]);
+        const result = possibilities.ratings.filter(r => Math.abs(possibilities.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3).map(r => data.messages[r.target]);
+        console.log('match with', possibilities);
         console.log('result: ', result);
         return result[Math.round(Math.random() * (result.length - 1))];
     }

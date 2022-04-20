@@ -22,7 +22,8 @@ class InteractionCreate extends listener_1.default {
             if (interaction.isCommand()) {
                 const command = this.bot.commandManager.get(interaction);
                 if (command != null) {
-                    yield command.run(interaction, this.bot.client);
+                    command.run(interaction, this.bot.client)
+                        .catch(error => console.log(error));
                 }
             }
         });

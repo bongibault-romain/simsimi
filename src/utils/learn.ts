@@ -7,7 +7,7 @@ export default async (
   answer: string
 ): Promise<MessageEmbed> => {
     question = format(question);
-    answer = format(answer);
+    answer = format(answer, false);
 
   if (isVoid(answer) || isVoid(question)) {
     if (format(answer).length == 0) {

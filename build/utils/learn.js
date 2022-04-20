@@ -37,7 +37,7 @@ const format_1 = require("./format");
 const sentences = __importStar(require("./../database/sentences"));
 exports.default = (question, answer) => __awaiter(void 0, void 0, void 0, function* () {
     question = (0, format_1.format)(question);
-    answer = (0, format_1.format)(answer);
+    answer = (0, format_1.format)(answer, false);
     if ((0, format_1.isVoid)(answer) || (0, format_1.isVoid)(question)) {
         if ((0, format_1.format)(answer).length == 0) {
             return new discord_js_1.MessageEmbed()

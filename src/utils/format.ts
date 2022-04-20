@@ -1,5 +1,9 @@
-export const format = (message: string) => {
-    return message.replace('`', '').trim().toLowerCase();
+export const format = (message: string, toLowerCase: boolean = true) => {
+    if (toLowerCase) {
+      return message.replace('`', '').trim().toLowerCase()
+    } else {
+      return message.replace('`', '').trim()
+    }
 };
 
 export const isVoid = (message: string) => {

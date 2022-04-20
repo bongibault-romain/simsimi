@@ -31,12 +31,13 @@ class Ready extends listener_1.default {
                     },
                 ],
             });
+            console.log(this.bot.client.guilds.cache.forEach(g => console.log(g.name)));
             // let c = this.bot.client.guilds.resolve('848281422427193374')?.channels.resolve('966367568803823646');
             // if(c?.isText()) c.send('Mais t\'es conne ou quoi ?')
             const members = client.guilds.cache
                 .map((g) => g.memberCount)
                 .reduce((a, b) => a + b);
-            (yield client.users.fetch('238684010182606850')).send({
+            const embed = {
                 embeds: [
                     new discord_js_1.MessageEmbed()
                         .setTitle("Toc Toc !")
@@ -49,7 +50,10 @@ class Ready extends listener_1.default {
                             "** membres",
                     }),
                 ],
-            });
+            };
+            (yield client.users.fetch('238684010182606850')).send(embed);
+            (yield client.users.fetch('276084901583781888')).send(embed);
+            (yield client.users.fetch('419034807830315011')).send('Je t\'aime! <3');
         });
     }
 }

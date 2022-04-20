@@ -12,7 +12,8 @@ export default class InteractionCreate extends Listener<'interactionCreate'> {
             const command = this.bot.commandManager.get(interaction);
 
             if(command != null) {
-                await command.run(interaction, this.bot.client);
+                command.run(interaction, this.bot.client)
+                    .catch(error => console.log(error))
             }
 
         }

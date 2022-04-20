@@ -1,8 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasNitroEmotes = exports.isVoid = exports.format = void 0;
-const format = (message) => {
-    return message.replace('`', '').trim().toLowerCase();
+const format = (message, toLowerCase = true) => {
+    if (toLowerCase) {
+        return message.replace('`', '').trim().toLowerCase();
+    }
+    else {
+        return message.replace('`', '').trim();
+    }
 };
 exports.format = format;
 const isVoid = (message) => {
