@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const get_1 = __importDefault(require("../app/commands/get"));
 const learn_1 = __importDefault(require("../app/commands/learn"));
+const setup_1 = __importDefault(require("../app/commands/setup"));
 class CommandManager {
     constructor(bot) {
         this.bot = bot;
@@ -13,6 +14,7 @@ class CommandManager {
     load() {
         this.register(new learn_1.default(this.bot));
         this.register(new get_1.default(this.bot));
+        this.register(new setup_1.default(this.bot));
     }
     unload() {
     }
@@ -22,8 +24,8 @@ class CommandManager {
     exists(name) {
         return this.commands.some(command => command.name === name);
     }
-    get(name) {
-        return this.commands.find(command => command.name === name) || null;
+    get(interaction) {
+        return this.commands.find(cmd => cmd.name === interaction.commandName) || null;
     }
 }
 exports.default = CommandManager;

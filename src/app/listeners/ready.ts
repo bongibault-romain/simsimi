@@ -18,6 +18,9 @@ export default class Ready extends Listener<"ready"> {
       ],
     });
 
+    // let c = this.bot.client.guilds.resolve('848281422427193374')?.channels.resolve('966367568803823646');
+    // if(c?.isText()) c.send('Mais t\'es conne ou quoi ?')
+
     const members = client.guilds.cache
       .map((g) => g.memberCount)
       .reduce((a, b) => a + b);

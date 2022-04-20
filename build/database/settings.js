@@ -8,24 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const listener_1 = __importDefault(require("../../listeners/listener"));
-class InteractionCreate extends listener_1.default {
-    get name() {
-        return 'interactionCreate';
-    }
-    run(interaction) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (interaction.isCommand()) {
-                const command = this.bot.commandManager.get(interaction);
-                if (command != null) {
-                    yield command.run(interaction, this.bot.client);
-                }
-            }
-        });
-    }
-}
-exports.default = InteractionCreate;
+exports.getSimsimiMessageId = exports.getSimsimiChannelId = exports.setSimsimiChannelId = void 0;
+const setSimsimiChannelId = (guildId, channelId, messageId) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.setSimsimiChannelId = setSimsimiChannelId;
+const getSimsimiChannelId = (guildId) => __awaiter(void 0, void 0, void 0, function* () {
+    return '';
+});
+exports.getSimsimiChannelId = getSimsimiChannelId;
+const getSimsimiMessageId = (guildId) => __awaiter(void 0, void 0, void 0, function* () {
+    return '';
+});
+exports.getSimsimiMessageId = getSimsimiMessageId;

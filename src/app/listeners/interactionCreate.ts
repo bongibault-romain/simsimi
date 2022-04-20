@@ -9,8 +9,8 @@ export default class InteractionCreate extends Listener<'interactionCreate'> {
 
     public async run(interaction: Interaction<CacheType>): Promise<any> {
         if(interaction.isCommand()) {
-            const command = this.bot.commandManager.get(interaction.commandName);
-            
+            const command = this.bot.commandManager.get(interaction);
+
             if(command != null) {
                 await command.run(interaction, this.bot.client);
             }
