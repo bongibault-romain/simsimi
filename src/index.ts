@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { MessageEmbed, Permissions } = Discord;
+const { MessageEmbed } = Discord;
 const fs = require('fs');
 const stringSimilarity = require("string-similarity");
 
@@ -253,7 +253,7 @@ bot.on('interactionCreate', async (interaction) => {
     if (interaction.isCommand()) {
         if (interaction.commandName == "setup") {
 
-            if ((interaction.member).permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+            if ((interaction.member).permissions.has('ADMINISTRATOR')) {
 
                 if (interaction.options.getSubcommand('here') == 'here') {
 
@@ -555,7 +555,7 @@ bot.on('messageCreate', async (message) => {
                     const responseMessage= r[Math.round(Math.random() * (r.length - 1))];
 
                     setTimeout(async () => {
-                        await message.reply(capitalize(responseMessage))
+                        await message.reply(capitalize(responseMessage, false))
                     }, 10 * responseMessage.length <= 2000 ? 50 * responseMessage.length : 2000);
 
                 } else {
