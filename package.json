@@ -1,0 +1,28 @@
+{
+  "name": "simsimi",
+  "version": "1.0.0",
+  "description": "Ce projet est un bot discord basée sur Simsimi.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bongibault-romain/simsimi.git"
+  },
+  "keywords": [
+    "Simsimi",
+    "Chatbot"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bongibault-romain/simsimi/issues"
+  },
+  "homepage": "https://github.com/bongibault-romain/simsimi#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "string-similarity": "^4.0.4"
+  }
+}
