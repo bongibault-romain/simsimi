@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import Command from "../../commands/command";
 import { CommandParameter } from "../../commands/commandParameter";
-import { exists, get } from "../../database/sentences";
+import { strictExists, get, exists } from "../../database/sentences";
 import { format, isVoid } from "../../utils/format";
 import learn from "../../utils/learn";
 
@@ -69,7 +69,7 @@ export default class GetCommand extends Command {
     }
 
     if (!(await exists(question))) {
-      interaction.reply({
+      return interaction.reply({
         embeds: [
           new MessageEmbed()
             .setTitle("Oups !")
@@ -81,9 +81,13 @@ export default class GetCommand extends Command {
       });
     }
 
-    return new MessageEmbed()
-      .setTitle(['La question "**', question, '**" est liée à :'].join(""))
-      .setColor("#3366ff")
-      .setDescription((await get(question)).join(""));
+    return interaction.reply({
+      embeds: [
+        new MessageEmbed()
+          .setTitle(['La question "**', question, '**" est liée à :'].join(""))
+          .setColor("#3366ff")
+          .setDescription((await get(question)).join("")),
+      ],
+    });
   }
 }

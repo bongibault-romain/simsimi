@@ -61,7 +61,7 @@ class GetCommand extends command_1.default {
                 });
             }
             if (!(yield (0, sentences_1.exists)(question))) {
-                interaction.reply({
+                return interaction.reply({
                     embeds: [
                         new discord_js_1.MessageEmbed()
                             .setTitle("Oups !")
@@ -70,10 +70,14 @@ class GetCommand extends command_1.default {
                     ],
                 });
             }
-            return new discord_js_1.MessageEmbed()
-                .setTitle(['La question "**', question, '**" est liée à :'].join(""))
-                .setColor("#3366ff")
-                .setDescription((yield (0, sentences_1.get)(question)).join(""));
+            return interaction.reply({
+                embeds: [
+                    new discord_js_1.MessageEmbed()
+                        .setTitle(['La question "**', question, '**" est liée à :'].join(""))
+                        .setColor("#3366ff")
+                        .setDescription((yield (0, sentences_1.get)(question)).join("")),
+                ],
+            });
         });
     }
 }

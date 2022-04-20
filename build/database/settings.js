@@ -8,16 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSimsimiMessageId = exports.getSimsimiChannelId = exports.setSimsimiChannelId = void 0;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const setSimsimiChannelId = (guildId, channelId, messageId) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "../..", "database.json"), "utf8"));
+    data.channels[guildId] = channelId;
+    data.setupMessages[guildId] = messageId;
+    fs_1.default.writeFileSync(path_1.default.join(__dirname, "../..", "database.json"), JSON.stringify(data, null, 4), "utf8");
 });
 exports.setSimsimiChannelId = setSimsimiChannelId;
 const getSimsimiChannelId = (guildId) => __awaiter(void 0, void 0, void 0, function* () {
-    return '';
+    const data = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "../..", "database.json"), "utf8"));
+    return data.channels[guildId] || null;
 });
 exports.getSimsimiChannelId = getSimsimiChannelId;
 const getSimsimiMessageId = (guildId) => __awaiter(void 0, void 0, void 0, function* () {
-    return '';
+    const data = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "../..", "database.json"), "utf8"));
+    return data.setupMessages[guildId] || null;
 });
 exports.getSimsimiMessageId = getSimsimiMessageId;

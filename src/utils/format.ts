@@ -1,5 +1,5 @@
 export const format = (message: string) => {
-    return message.replace('`', '').trim();
+    return message.replace('`', '').trim().toLowerCase();
 };
 
 export const isVoid = (message: string) => {

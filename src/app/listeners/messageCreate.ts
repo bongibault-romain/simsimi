@@ -1,5 +1,8 @@
 import { Message, MessageEmbed } from "discord.js";
+import { strictExists, get, exists } from "../../database/sentences";
+import { getSimsimiChannelId } from "../../database/settings";
 import Listener from "../../listeners/listener";
+import { format } from "../../utils/format";
 
 export default class MessageCreate extends Listener<"messageCreate"> {
   public get name(): "messageCreate" {
@@ -56,6 +59,40 @@ export default class MessageCreate extends Listener<"messageCreate"> {
             ],
           });
         }
+      }
+
+      if (!message.author.bot && message.guildId && !message.content.includes('@')) {
+        if (message.channelId == (await getSimsimiChannelId(message.guildId))) {
+          if (await exists(format(message.content))) {
+            const responses = await get(format(message.content));
+
+            console.log(responses);
+
+            message.reply({
+              content:
+                responses[Math.round(Math.random() * (responses.length - 1))],
+            });
+          }else {
+            return await message.channel.send({
+              embeds: [
+                new MessageEmbed()
+                  .setTitle(["Hey ", message.author.username, " !"].join(""))
+                  .setColor("#3333ff")
+                  .setDescription(
+                    "Je ne sais pas quoi répondre à cela. Peux-tu me l'apprendre ?" +
+                      "\n" +
+                      "" +
+                      "\n" +
+                      "**Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre." +
+                      "\n" +
+                      "" +
+                      "\n" +
+                      "Sinon, utilises ``/learn`` !"
+                  ),
+              ],
+            });
+          }
+        } 
       }
     }
   }

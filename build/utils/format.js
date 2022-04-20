@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.hasNitroEmotes = exports.isVoid = exports.format = void 0;
 const format = (message) => {
-    return message.replace('`', '').trim();
+    return message.replace('`', '').trim().toLowerCase();
 };
 exports.format = format;
 const isVoid = (message) => {

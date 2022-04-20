@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import Command from "../../commands/command";
 import { CommandParameter } from "../../commands/commandParameter";
-import { exists, get } from "../../database/sentences";
+import { strictExists, get } from "../../database/sentences";
 import {
   getSimsimiChannelId,
   getSimsimiMessageId,

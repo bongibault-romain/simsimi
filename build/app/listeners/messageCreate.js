@@ -13,7 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
+const sentences_1 = require("../../database/sentences");
+const settings_1 = require("../../database/settings");
 const listener_1 = __importDefault(require("../../listeners/listener"));
+const format_1 = require("../../utils/format");
 class MessageCreate extends listener_1.default {
     get name() {
         return "messageCreate";
@@ -65,6 +68,35 @@ class MessageCreate extends listener_1.default {
                                 }),
                             ],
                         });
+                    }
+                }
+                if (!message.author.bot && message.guildId && !message.content.includes('@')) {
+                    if (message.channelId == (yield (0, settings_1.getSimsimiChannelId)(message.guildId))) {
+                        if (yield (0, sentences_1.exists)((0, format_1.format)(message.content))) {
+                            const responses = yield (0, sentences_1.get)((0, format_1.format)(message.content));
+                            console.log(responses);
+                            message.reply({
+                                content: responses[Math.round(Math.random() * (responses.length - 1))],
+                            });
+                        }
+                        else {
+                            return yield message.channel.send({
+                                embeds: [
+                                    new discord_js_1.MessageEmbed()
+                                        .setTitle(["Hey ", message.author.username, " !"].join(""))
+                                        .setColor("#3333ff")
+                                        .setDescription("Je ne sais pas quoi répondre à cela. Peux-tu me l'apprendre ?" +
+                                        "\n" +
+                                        "" +
+                                        "\n" +
+                                        "**Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre." +
+                                        "\n" +
+                                        "" +
+                                        "\n" +
+                                        "Sinon, utilises ``/learn`` !"),
+                                ],
+                            });
+                        }
                     }
                 }
             }

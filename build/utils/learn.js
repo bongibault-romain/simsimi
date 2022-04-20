@@ -114,7 +114,8 @@ exports.default = (question, answer) => __awaiter(void 0, void 0, void 0, functi
             .setColor("#cc0000")
             .setDescription("Ta question et ta réponse ne peuvent contenir d'``@`` !");
     }
-    if (yield sentences.exists(question, answer)) {
+    console.log(question, answer);
+    if (yield sentences.strictExists(question, answer)) {
         return new discord_js_1.MessageEmbed()
             .setTitle("Oups !")
             .setColor("#cc0000")

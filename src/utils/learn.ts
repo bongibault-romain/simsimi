@@ -108,7 +108,9 @@ export default async (
       );
   }
 
-  if (await sentences.exists(question, answer)) {
+
+    console.log(question, answer);
+  if (await sentences.strictExists(question, answer)) {
     return new MessageEmbed()
       .setTitle("Oups !")
       .setColor("#cc0000")
