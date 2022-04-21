@@ -1,11 +1,4 @@
-import { dirname } from "@discordx/importer";
-import * as fs from "fs";
-import path from "path";
 import knex from "./knex.js";
-
-export const IDsFilePath = path.join(dirname(import.meta.url), "../../data/IDs.json");
-fs.existsSync(path.join(IDsFilePath, "../")) || fs.mkdirSync(path.join(IDsFilePath, "../"));
-fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], configAllowedRoles: [], guilds: [] }));
 
 export async function addRole(roleId: string) {
   return knex.table("permissions").insert({
