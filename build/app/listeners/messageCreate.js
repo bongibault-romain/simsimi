@@ -17,12 +17,13 @@ const sentences_1 = require("../../database/sentences");
 const settings_1 = require("../../database/settings");
 const listener_1 = __importDefault(require("../../listeners/listener"));
 const format_1 = require("../../utils/format");
+const learn_1 = __importDefault(require("../../utils/learn"));
 class MessageCreate extends listener_1.default {
     get name() {
         return "messageCreate";
     }
     run(message) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             if (this.bot.client.user) {
                 if (!message.reference) {
@@ -70,17 +71,39 @@ class MessageCreate extends listener_1.default {
                         });
                     }
                 }
-                if (!message.author.bot && message.guildId && !message.content.includes('@')) {
+                if (!message.author.bot &&
+                    message.guildId &&
+                    !message.content.includes("@")) {
                     if (message.channelId == (yield (0, settings_1.getSimsimiChannelId)(message.guildId))) {
+                        if (message.reference &&
+                            message.reference.messageId &&
+                            message.reference.channelId &&
+                            message.reference.guildId) {
+                            const fastLearn = this.bot.commandManager.getFastLearn(message.reference.messageId);
+                            if (fastLearn) {
+                                const answerChannel = (_b = this.bot.client.guilds
+                                    .resolve(message.reference.guildId)) === null || _b === void 0 ? void 0 : _b.channels.resolve(message.reference.channelId);
+                                if (answerChannel === null || answerChannel === void 0 ? void 0 : answerChannel.isText()) {
+                                    let anwser = message.content;
+                                    (0, learn_1.default)(fastLearn.question, anwser)
+                                        .then((embed) => {
+                                        message.reply({
+                                            embeds: [embed]
+                                        });
+                                    });
+                                    this.bot.commandManager.removeFastLearn(message.reference.messageId);
+                                    return;
+                                }
+                            }
+                        }
                         if (yield (0, sentences_1.exists)((0, format_1.format)(message.content))) {
                             const responses = yield (0, sentences_1.get)((0, format_1.format)(message.content));
-                            console.log(responses);
                             message.reply({
                                 content: responses[Math.round(Math.random() * (responses.length - 1))],
                             });
                         }
                         else {
-                            return yield message.channel.send({
+                            const fastLearnMessage = yield message.reply({
                                 embeds: [
                                     new discord_js_1.MessageEmbed()
                                         .setTitle(["Hey ", message.author.username, " !"].join(""))
@@ -96,6 +119,7 @@ class MessageCreate extends listener_1.default {
                                         "Sinon, utilises ``/learn`` !"),
                                 ],
                             });
+                            this.bot.commandManager.addFastLearn((0, format_1.format)(message.content), fastLearnMessage.id);
                         }
                     }
                 }

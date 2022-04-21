@@ -3,6 +3,7 @@ import { strictExists, get, exists } from "../../database/sentences";
 import { getSimsimiChannelId } from "../../database/settings";
 import Listener from "../../listeners/listener";
 import { format } from "../../utils/format";
+import learn from "../../utils/learn";
 
 export default class MessageCreate extends Listener<"messageCreate"> {
   public get name(): "messageCreate" {
@@ -61,19 +62,54 @@ export default class MessageCreate extends Listener<"messageCreate"> {
         }
       }
 
-      if (!message.author.bot && message.guildId && !message.content.includes('@')) {
+      if (
+        !message.author.bot &&
+        message.guildId &&
+        !message.content.includes("@")
+      ) {
         if (message.channelId == (await getSimsimiChannelId(message.guildId))) {
+          if (
+            message.reference &&
+            message.reference.messageId &&
+            message.reference.channelId &&
+            message.reference.guildId
+          ) {
+            const fastLearn = this.bot.commandManager.getFastLearn(
+              message.reference.messageId
+            );
+
+            if (fastLearn) {
+              const answerChannel = this.bot.client.guilds
+                .resolve(message.reference.guildId)
+                ?.channels.resolve(message.reference.channelId);
+
+              if (answerChannel?.isText()) {
+                let anwser = message.content;
+
+                learn(fastLearn.question, anwser)
+                  .then((embed) => {
+                    message.reply({
+                      embeds: [embed]
+                    })
+                  })
+
+                this.bot.commandManager.removeFastLearn(
+                  message.reference.messageId
+                );
+                return;
+              }
+            }
+          }
+
           if (await exists(format(message.content))) {
             const responses = await get(format(message.content));
-
-            console.log(responses);
 
             message.reply({
               content:
                 responses[Math.round(Math.random() * (responses.length - 1))],
             });
-          }else {
-            return await message.channel.send({
+          } else {
+            const fastLearnMessage = await message.reply({
               embeds: [
                 new MessageEmbed()
                   .setTitle(["Hey ", message.author.username, " !"].join(""))
@@ -91,8 +127,13 @@ export default class MessageCreate extends Listener<"messageCreate"> {
                   ),
               ],
             });
+
+            this.bot.commandManager.addFastLearn(
+              format(message.content),
+              fastLearnMessage.id
+            );
           }
-        } 
+        }
       }
     }
   }

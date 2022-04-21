@@ -10,6 +10,7 @@ class CommandManager {
     constructor(bot) {
         this.bot = bot;
         this.commands = [];
+        this.fastLearnMessages = [];
     }
     load() {
         this.register(new learn_1.default(this.bot));
@@ -26,6 +27,19 @@ class CommandManager {
     }
     get(interaction) {
         return this.commands.find(cmd => cmd.name === interaction.commandName) || null;
+    }
+    addFastLearn(question, messageId) {
+        this.fastLearnMessages.push({
+            question,
+            messageId
+        });
+    }
+    removeFastLearn(messageId) {
+        this.fastLearnMessages = this.fastLearnMessages.filter(msg => msg.messageId !== messageId);
+    }
+    getFastLearn(messageId) {
+        const msg = this.fastLearnMessages.find(msg => msg.messageId === messageId);
+        return msg || null;
     }
 }
 exports.default = CommandManager;

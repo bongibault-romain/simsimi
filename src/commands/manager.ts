@@ -9,6 +9,11 @@ export default class CommandManager {
 
     private commands: Command[] = [];
 
+    private fastLearnMessages: {
+        question: string;
+        messageId: string;
+    }[] = []
+
     constructor(private readonly bot: SimSimi) {}
 
     public load() {
@@ -31,6 +36,22 @@ export default class CommandManager {
 
     public get(interaction: CommandInteraction): Command | null {
         return this.commands.find(cmd => cmd.name === interaction.commandName) || null;
+    }
+
+    public addFastLearn(question: string, messageId: string) {
+        this.fastLearnMessages.push({
+            question,
+            messageId
+        });
+    }
+
+    public removeFastLearn(messageId: string) {
+        this.fastLearnMessages = this.fastLearnMessages.filter(msg => msg.messageId !== messageId);
+    }
+
+    public getFastLearn(messageId: string): {question: string; messageId: string} | null {
+        const msg = this.fastLearnMessages.find(msg => msg.messageId === messageId);
+        return msg || null;
     }
 
 }
