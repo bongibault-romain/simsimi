@@ -21,15 +21,15 @@ export class Setup {
     channel: Channel,
     interaction: CommandInteraction) {
     if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
-    
-      await interaction.deferReply({ephemeral: true});
 
-    if (await isRegisteredChannel(channel.id)) {    
-      await removeChannel(channel.id); 
+    await interaction.deferReply({ ephemeral: true });
+
+    if (await isRegisteredChannel(channel.id)) {
+      await removeChannel(channel.id);
       await interaction.editReply({ content: "Ce salon n'est plus configuré pour répondre aux phrases !" });
-    } else 
+    } else
       await interaction.editReply({ content: "Ce salon n'était pas configuré pour répondre aux phrases." });
-    
+
   }
   @SlashGroup("channel", "config")
   @Slash("add", { description: "Configure le bot pour qu'il réponde à toutes les phrases de un salon" })
@@ -38,16 +38,17 @@ export class Setup {
     channel: Channel,
     interaction: CommandInteraction) {
     if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
-    
-      await interaction.deferReply({ephemeral: true});
 
-    if (!(await isRegisteredChannel(channel.id))) {    
-      await addChannel(channel.id); 
     if (!channel.isText()) { await interaction.reply({ content: "Tu dois sélectonner un salon textuel !", ephemeral: true }); return; }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    if (!(await isRegisteredChannel(channel.id))) {
+      await addChannel(channel.id);
       await interaction.editReply({ content: "Ce salon est maintenant configuré pour répondre aux phrases !" });
-    } else 
+    } else
       await interaction.editReply({ content: "Ce salon était déjà configuré pour répondre aux phrases." });
-    
+
   }
 
   private async refreshPermissions(interaction: CommandInteraction) {
