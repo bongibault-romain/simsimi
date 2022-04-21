@@ -13,16 +13,12 @@ export abstract class LearnCommand {
     sentence: string,
     @SlashOption("réponse", { description: "Phrase par laquelle je devrais répondre", required: true, })
     answer: string,
-    @SlashChoice({ name: "Normal", value: "NORMAL" })
-    @SlashChoice({ name: "Énervé", value: "ANGRY" })
-    @SlashChoice({ name: "Amoureux", value: "LOVE" })
-    @SlashChoice({ name: "Endormi", value: "SLEEPY" })
-    @SlashChoice({ name: "Dégouté", value: "DISGUSTED" })
-    @SlashChoice({ name: "Interrogatif", value: "ASKING" })
-    @SlashOption("émotion", { description: "L'émotion que j'aurais quand je réagirai", required: true })
+    @SlashChoice()
+    @SlashChoice({ name: "Amoureux", value: "LOVE" }, { name: "Interrogatif", value: "ASKING" }, { name: "Énervé", value: "ANGRY" }, { name: "Endormi", value: "SLEEPY" }, { name: "Dégouté", value: "DISGUSTED" })
+    @SlashOption("émotion", { description: "L'émotion que j'aurais quand je réagirai", required: false })
     emotion: Emotion,
     interaction: CommandInteraction
-  ) {
+  ) {    
     if (!sentence || !answer) {
       await interaction.reply({ content: "Tu dois préciser une phrase à laquelle je dois réagir et une phrase par laquelle je devrais répondre !", ephemeral: true });
       return;
@@ -33,7 +29,7 @@ export abstract class LearnCommand {
     });
 
     try {
-      await learn(sentence, answer, emotion, interaction.user);
+      await learn(sentence, answer, emotion || null, interaction.user);
 
       const responseEmbed = new MessageEmbed()
         .setTitle("Merci pour ton aide !")

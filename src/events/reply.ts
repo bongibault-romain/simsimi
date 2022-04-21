@@ -95,10 +95,13 @@ export abstract class Reply {
           if(reaction)
             await message.react(reaction);
 
-          await message.reply({
-            content: answer.message,
-          });
-              
+          await message.channel.sendTyping();
+
+          setTimeout(async () => {
+            await message.reply({
+              content: answer.message,
+            }); 
+          }, answer.message.length * 10 < 2000 ? answer.message.length * 10 : 2000);
             
           return;
         }
