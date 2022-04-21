@@ -5,7 +5,7 @@ import { hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
 
 @Discord()
-export abstract class learnCommand {
+export abstract class LearnCommand {
   @Slash("learn", { description: "Apprends à réagir à une phrase" })
   private async learn(
     @SlashOption("question", { description: "Phrase à laquelle je dois réagir" })
