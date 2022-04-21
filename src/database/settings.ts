@@ -2,12 +2,9 @@ import { dirname } from "@discordx/importer";
 import * as fs from "fs";
 import path from "path";
 
-const IDsFilePath = path.join(dirname(import.meta.url), "../../data/IDs.json");
-
-console.log(path.join(IDsFilePath, "../"));
-
+export const IDsFilePath = path.join(dirname(import.meta.url), "../../data/IDs.json");
 fs.existsSync(path.join(IDsFilePath, "../")) || fs.mkdirSync(path.join(IDsFilePath, "../"));
-fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], guilds: [] }));
+fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], configAllowedRoles: [], guilds: [] }));
 
 export function addChannel(channelId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
