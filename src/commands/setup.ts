@@ -1,6 +1,7 @@
 import { Channel, CommandInteraction, Role } from "discord.js";
 import { Discord, Permission, Slash, SlashGroup, SlashOption } from "discordx";
 import { addChannel, isRegisteredChannel, removeChannel } from "../database/channels.js";
+import { addRole, isAllowedRole, removeRole } from "../database/permissions.js";
 import { bot } from "../index.js";
 import { admins, configAllowedRoles, guildOwner } from "../utils/permissionResolver.js";
 
@@ -65,17 +66,17 @@ export class Setup {
     autorisation: boolean,
     interaction: CommandInteraction) {
     if (!role) { await interaction.reply({ content: "Tu dois mentionner un role pour utiliser cette commande !", ephemeral: true }); return; }
-    if (autorisation && isRegisteredChannel(role.id)) {
+    if (autorisation && isAllowedRole(role.id)) {
       await interaction.reply({ content: "Ce role est déjà autorisé à utiliser cette commande !", ephemeral: true }); return;
     }
-    if (!autorisation && !isRegisteredChannel(role.id)) {
+    if (!autorisation && !isAllowedRole(role.id)) {
       await interaction.reply({ content: "Ce role n'est pas autorisé à utiliser cette commande !", ephemeral: true }); return;
     }
 
     await interaction.deferReply();
 
-    if (autorisation) { addChannel(role.id); await interaction.editReply({ content: "Ce role est maintenant autorisé à utiliser cette commande !" }); }
-    else { removeChannel(role.id); await interaction.editReply({ content: "Ce role n'est plus autorisé à utiliser cette commande !" }); }
+    if (autorisation) { addRole(role.id); await interaction.editReply({ content: "Ce role est maintenant autorisé à utiliser cette commande !" }); }
+    else { removeRole(role.id); await interaction.editReply({ content: "Ce role n'est plus autorisé à utiliser cette commande !" }); }
 
     await this.refreshPermissions(interaction);
   }
