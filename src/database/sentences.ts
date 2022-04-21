@@ -17,6 +17,8 @@ export function add(sentence: string, answer: string) {
 export function get(question: string) {
   const sentences = JSON.parse(fs.readFileSync(sentencesFilePath, "utf8"));
 
+  if (Object.keys(sentences).length === 0) return null;
+
   if (sentences[question]) return sentences[question];
 
   const matchingSentences = stringSimilarity.findBestMatch(question, Object.keys(sentences));
