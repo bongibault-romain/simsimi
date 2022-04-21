@@ -2,6 +2,8 @@ import stringSimilarity from "string-similarity";
 import knex from "./knex.js";
 import { Emotion } from "../typing/emotion.js";
 
+// TODO: Rewrite this file
+
 export async function add(sentence: string, answer: string, emotion: Emotion | null, authorId: string) {
   let rawQuestion = await knex.select("*").from("questions").where({
     message: Buffer.from(sentence, "utf8").toString("base64"),
