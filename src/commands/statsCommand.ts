@@ -13,7 +13,7 @@ export abstract class StatsCommand {
             embeds: [
                 new MessageEmbed()
                     .setTitle("Quelques Statistiques")
-                    .setDescription(`Je connais **${await questions.count()}** questions et **${await answers.count()}** réponses.`)
+                    .setDescription(`Je connais **${await questions.count()}** questions et **${await answers.countAll()}** réponses.`)
                     .setColor("#3333ff")
             
                 ],
