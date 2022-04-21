@@ -11,6 +11,11 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc"
   },
+  "nodemonConfig": {
+    "ext": "js,ts",
+    "watch": "src",
+    "ignore": ["node_modules", "build", "package.json", "tsconfig.json", "data"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bongibault-romain/simsimi.git"
