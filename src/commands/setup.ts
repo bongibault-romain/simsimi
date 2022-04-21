@@ -3,12 +3,13 @@ import { Discord, Permission, Slash, SlashGroup, SlashOption } from "discordx";
 import { addChannel, isRegisteredChannel, removeChannel } from "../database/channels.js";
 import { addRole, isAllowedRole, removeRole } from "../database/permissions.js";
 import { bot } from "../index.js";
-import { admins, guildOwner } from "../utils/permissionResolver.js";
+import { admins, configAllowedRoles, guildOwner } from "../utils/permissionResolver.js";
 
 @Discord()
 @Permission(false)
 @Permission(guildOwner)
 @Permission(admins)
+@Permission(configAllowedRoles)
 @SlashGroup({ description: "Configure le bot", name: "config" })
 @SlashGroup({ description: "Configure les permissions de configuration du bot", name: "permission", root: "config" })
 @SlashGroup({ description: "Configure les channels où le bot réponds aux messages.", name: "channel", root: "config" })
