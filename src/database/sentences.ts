@@ -4,9 +4,6 @@ import stringSimilarity from "string-similarity";
 import { dirname } from "@discordx/importer";
 
 const sentencesFilePath = path.join(dirname(import.meta.url), "../../data/sentences.json");
-
-console.log(path.join(sentencesFilePath, "../"));
-
 fs.existsSync(path.join(sentencesFilePath, "../")) || fs.mkdirSync(path.join(sentencesFilePath, "../"));
 fs.existsSync(sentencesFilePath) || fs.writeFileSync(sentencesFilePath, "{}");
 
