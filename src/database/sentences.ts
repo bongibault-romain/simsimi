@@ -10,13 +10,13 @@ fs.existsSync(sentencesFilePath) || fs.writeFileSync(sentencesFilePath, "{}");
 
 export async function add(sentence: string, answer: string, authorId: string) {
   let rawQuestion = await knex.select("*").from("questions").where({
-    message: sentence
+    message: Buffer.from(sentence, "utf8").toString("base64"),
   }).first();
   
   if(!rawQuestion) {
     const [questionId] = await knex.table("questions").insert({
       author_discord_id: authorId,
-      message: sentence,
+      message: Buffer.from(sentence, "utf8").toString("base64"),
     });
 
     rawQuestion = {id: questionId};
@@ -24,7 +24,7 @@ export async function add(sentence: string, answer: string, authorId: string) {
 
   await knex.table("answers").insert({
     author_discord_id: authorId,
-    message: answer,
+    message: Buffer.from(answer, "utf8").toString("base64"),
     question_id: rawQuestion.id,
   });
 }
@@ -34,19 +34,25 @@ export async function get(question: string) {
   
   if(rawQuestion.length === 0) return null;
 
-  const found = rawQuestion.find((q) => q.message === question);
-  if (found) return found;
+  const found = rawQuestion.find((q) => Buffer.from(q.message, "base64").toString("utf8") === question);
+  if (found) {
+    const foundAnwsers = await knex.select("*").from("answers").where({
+      question_id: found.id,
+    });
 
-  const matchingSentences = stringSimilarity.findBestMatch(question, rawQuestion.map(q => q.message));
+    return foundAnwsers.length > 0 ? foundAnwsers.map((a) => Buffer.from(a.message, "base64").toString("utf8")) : null;
+  }
+
+  const matchingSentences = stringSimilarity.findBestMatch(question, rawQuestion.map(q => Buffer.from(q.message, "base64").toString("utf8")));
 
   if (matchingSentences.bestMatch.rating > 0.3) {
     const result = matchingSentences.ratings.filter(r => Math.abs(matchingSentences.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3);
     const selected = result[Math.round(Math.random() * (result.length - 1))];
     
-    const selectedQuestion = rawQuestion.find(q => q.message === selected.target);
+    const selectedQuestion = rawQuestion.find(q => q.message === Buffer.from(selected.target, "utf8").toString("base64"));
     const answers = (await knex.select("*").from("answers").where({
       question_id: selectedQuestion.id
-    })).map(a => a.message);
+    })).map(a => Buffer.from(a.message, "base64").toString("utf8"));
     
     return answers.length > 0 ? answers : null;
   }
