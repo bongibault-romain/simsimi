@@ -25,15 +25,33 @@ export abstract class learnCommand {
 
     try {
       await learn(sentence, answer, interaction.user);
+
+      const responseEmbed = new MessageEmbed()
+        .setTitle("Merci pour ton aide !")
+            .setDescription("Je viens d'apprendre une nouvelle phrase.")
+            .setFields([
+              {
+                inline: true,
+                name: "Lorsqu'on me dira",
+                value: sentence,
+              },
+              {
+                inline: true,
+                name: "Je répondrai peut-être",
+                value: answer,
+              }
+            ])
+            .setColor("#ffcc00");
+
+      if(hasNitroEmotes(answer)) 
+        responseEmbed.setFooter({
+          text: "Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite."
+        });
+      
+
+
       await interaction.editReply({
-        embeds: [
-          new MessageEmbed()
-            .setTitle("Merci !")
-            .setDescription(`Je viens de m'apprendre à répondre à \`${sentence}\` par \`${answer}\` !
-            
-            ${hasNitroEmotes(answer) ? "**Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite.**" : ""}`)
-            .setColor("#ffcc00"),
-        ]
+        embeds: [ responseEmbed]
       });
     } catch (e) {
       if (e instanceof LearnError) 
