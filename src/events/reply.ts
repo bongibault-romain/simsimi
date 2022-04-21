@@ -5,6 +5,7 @@ import { isRegisteredChannel } from "../database/channels.js";
 import LearnError from "../errors/learn/LearnError.js";
 import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
+import * as fastlearn from "../stores/fastlearn.js";
 
 @Discord()
 export abstract class Reply {
@@ -46,32 +47,31 @@ export abstract class Reply {
     if (!message.author.bot && message.guildId && !message.content.includes("@")) 
       if (await isRegisteredChannel(message.channelId)) {
         if (message.type === "REPLY" && message.reference && message.reference.messageId) {
-          const botMessage = await message.channel.messages.fetch(message.reference.messageId);
+          const fastlearnData = fastlearn.get(message.reference.messageId);
 
-          if (!botMessage.reference?.messageId || !botMessage.author.bot || !botMessage.embeds[0]?.description?.endsWith("``fastlearn``")) return;
+          if (fastlearnData) 
 
-          const fastLearnSentence = await message.channel.messages.fetch(botMessage.reference.messageId);
-
-          if (!fastLearnSentence) { await message.reply("Je ne peux pas répondre à ce message car il a été supprimé !"); return; }
-
-          try {
-            learn(fastLearnSentence.content, message.content, message.author);
-            await message.reply({
-              embeds: [
-                new MessageEmbed()
-                  .setTitle("Merci !")
-                  .setDescription(`Je viens de m'apprendre à répondre à \`${fastLearnSentence.content}\` par \`${message.content}\` !
-                  
-                  ${hasNitroEmotes(message.content) ? "**Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite.**" : ""}`)
-                  .setColor("#ffcc00"),
-              ]
-            });
-          } catch (e) {
-            console.error(e);
-            if (e instanceof LearnError) { await e.replyToUser(message); return; }
-            console.error(e); return;
-          }
-
+            try {
+              await learn(fastlearnData.question, message.content, message.author);
+              await message.reply({
+                embeds: [
+                  new MessageEmbed()
+                    .setTitle("Merci !")
+                    .setDescription(`Je viens de m'apprendre à répondre à \`${fastlearnData.question}\` par \`${message.content}\` !
+                    
+                    ${hasNitroEmotes(message.content) ? "**Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite.**" : ""}`)
+                    .setColor("#ffcc00"),
+                ]
+              });
+              
+              fastlearn.remove(message.reference.messageId);
+            } catch (e) {
+              console.error(e);
+              if (e instanceof LearnError) { await e.replyToUser(message); return; }
+              console.error(e); return;
+            }
+          
+        
         }
 
         if (message.reference) return;
@@ -82,7 +82,7 @@ export abstract class Reply {
 
         if (answers) { await message.reply(answers[Math.round(Math.random() * (answers.length - 1))]); return; }
 
-        await message.reply({
+        const fastlearnMessage = await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle(`Hey ${message.member?.displayName} !`)
@@ -94,6 +94,8 @@ export abstract class Reply {
               .setColor("#3333ff")
           ]
         });
+
+        fastlearn.add(fastlearnMessage.id, message.content);
       }
     
   }

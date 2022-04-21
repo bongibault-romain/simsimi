@@ -3,10 +3,10 @@ import knex from "knex";
 export default knex({
   client: "mysql",
   connection: {
-    database: "simsimi",
-    host: "localhost",
-    password: "root",
-    user: "root",
+    database: process.env.DATABASE,
+    host: process.env.HOST,
+    password: process.env.PASSWORD,
+    user: process.env.USER,
   },
 });
 

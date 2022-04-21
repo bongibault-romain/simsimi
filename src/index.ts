@@ -28,7 +28,6 @@ process.on("SIGTERM", handleExit);
 
 function setupBotClient() {
     bot = new Client({
-        botGuilds: ["966657342546522122"],
         intents: [
             Intents.FLAGS.GUILDS,
             Intents.FLAGS.GUILD_MESSAGES,
