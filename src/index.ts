@@ -28,13 +28,14 @@ process.on("SIGTERM", handleExit);
 
 function setupBotClient() {
     bot = new Client({
+        botGuilds: ["966657342546522122"],
         intents: [
             Intents.FLAGS.GUILDS,
             Intents.FLAGS.GUILD_MESSAGES,
             Intents.FLAGS.DIRECT_MESSAGES,
             Intents.FLAGS.DIRECT_MESSAGE_TYPING,
         ],
-        silent: false
+        silent: false,
     });
 
     bot.once("ready", async () => {
