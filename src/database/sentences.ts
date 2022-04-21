@@ -1,69 +1,34 @@
-import fs from 'fs'
-import path from 'path'
-import stringSimilarity from 'string-similarity';
+import path from "path";
+import * as fs from "fs";
+import stringSimilarity from "string-similarity";
+import { dirname } from "@discordx/importer";
 
-export const strictExists = async (question: string, anwser: string | null = null): Promise<boolean> => {
-    const data = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-      );
+const sentencesFilePath = path.join(dirname(import.meta.url), "../../data/sentences.json");
+fs.existsSync(path.join(sentencesFilePath, "../")) || fs.mkdirSync(path.join(sentencesFilePath, "../"));
+fs.existsSync(sentencesFilePath) || fs.writeFileSync(sentencesFilePath, "{}");
 
-      if(anwser != null) {
-          return Array.isArray(data.messages[question]) && data.messages[question].includes(anwser);
-      } else {
-          return Array.isArray(data.messages[question]);
-      }
+export function add(sentence: string, answer: string) {
+  const sentences = JSON.parse(fs.readFileSync(sentencesFilePath, "utf8"));
 
-};
+  if (sentences[sentence]) sentences[sentence].push(answer);
+  else sentences[sentence] = [answer];
 
-export const exists = async (question: string): Promise<boolean> => {
-    return (await get(question)).length > 0;
+  fs.writeFileSync(sentencesFilePath, JSON.stringify(sentences));
 }
 
-export const get = async (question: string): Promise<string[]> => {
-    const data = JSON.parse(
-      fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-    );
+export function get(question: string) {
+  const sentences = JSON.parse(fs.readFileSync(sentencesFilePath, "utf8"));
 
-    if(data.messages[question]) {
-        return data.messages[question];
-    }
+  if (Object.keys(sentences).length === 0) return null;
 
-    const possibilities = stringSimilarity.findBestMatch(question, Object.keys(data.messages));
+  if (sentences[question]) return sentences[question];
 
-    if(possibilities.bestMatch.rating > 0.3) {
-        const result = possibilities.ratings.filter(r => Math.abs(possibilities.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3).map(r => data.messages[r.target]);
+  const matchingSentences = stringSimilarity.findBestMatch(question, Object.keys(sentences));
 
-        console.log('match with', possibilities)
-        console.log('result: ', result);
-        
-        return result[Math.round(Math.random() * (result.length - 1))];
-    }
+  if (matchingSentences.bestMatch.rating > 0.3) {
+    const result = matchingSentences.ratings.filter(r => Math.abs(matchingSentences.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3).map(r => sentences[r.target]);
+    return result[Math.round(Math.random() * (result.length - 1))];
+  }
 
-
-    return []
-};
-
-export const add = async (question: string, answer: string): Promise<void> => {
-    const data = JSON.parse(
-        fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-      );
-      
-    if(!Array.isArray(data.messages[question])) {
-        data.messages[question] = [];
-    }
-    
-    data.messages[question].push(answer);
-
-    fs.writeFileSync(
-        path.join(__dirname, "../..", "database.json"),
-        JSON.stringify(data, null, 4),
-    )
-};
-
-export const remove = async (question: string, answer: string): Promise<void> => {
-
-}
-
-export const removeAll = async (question: string): Promise<void> => {
-
+  return null;
 }

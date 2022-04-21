@@ -1,37 +1,72 @@
-import fs from "fs";
+import { dirname } from "@discordx/importer";
+import * as fs from "fs";
 import path from "path";
 
-export const setSimsimiChannelId = async (
-  guildId: string,
-  channelId: string | null,
-  messageId: string | null
-): Promise<void> => {
-  const data = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-  );
-  data.channels[guildId] = channelId;
-  data.setupMessages[guildId] = messageId;
-  fs.writeFileSync(
-    path.join(__dirname, "../..", "database.json"),
-    JSON.stringify(data, null, 4),
-    "utf8"
-  );
-};
+export const IDsFilePath = path.join(dirname(import.meta.url), "../../data/IDs.json");
+fs.existsSync(path.join(IDsFilePath, "../")) || fs.mkdirSync(path.join(IDsFilePath, "../"));
+fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], configAllowedRoles: [], guilds: [] }));
 
-export const getSimsimiChannelId = async (
-  guildId: string
-): Promise<string | null> => {
-  const data = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-  );
-  return data.channels[guildId] || null;
-};
+export function addChannel(channelId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.channels.push(channelId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
 
-export const getSimsimiMessageId = async (
-  guildId: string
-): Promise<string | null> => {
-  const data = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../..", "database.json"), "utf8")
-  );
-  return data.setupMessages[guildId] || null;
-};
+export function removeChannel(channelId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.channels = ids.channels.filter((c: string) => c !== channelId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
+
+export function getChannels(): string[] {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.channels;
+}
+export function isRegisteredChannel(channelId: string): boolean {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.channels.includes(channelId);
+}
+
+export function addGuild(guildId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.guilds.push(guildId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
+
+export function removeGuild(guildId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.guilds = ids.guilds.filter((g: string) => g !== guildId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
+
+export function getGuilds(): string[] {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.guilds;
+}
+
+export function isRegisteredGuild(guildId: string): boolean {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.guilds.includes(guildId);
+}
+
+export function addRole(roleId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.configAllowedRoles.push(roleId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
+
+export function removeRole(roleId: string) {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  ids.configAllowedRoles = ids.configAllowedRoles.filter((r: string) => r !== roleId);
+  fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
+}
+
+export function getRoles(): string[] {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.configAllowedRoles;
+}
+
+export function isAllowedRole(roleId: string): boolean {
+  const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
+  return ids.configAllowedRoles.includes(roleId);
+}
