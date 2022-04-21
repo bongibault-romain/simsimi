@@ -20,7 +20,7 @@ export async function removeChannel(channelId: string) {
 }
 
 export async function getChannelIds(): Promise<string[]> {
-  return knex.select("*").from("channels");
+  return (await knex.select("*").from("channels")).map((row: any) => row.channel_discord_id);
 }
 export async function isRegisteredChannel(channelId: string): Promise<boolean> {
   return (await knex.table("channels").where({
