@@ -43,6 +43,7 @@ export class Setup {
 
     if (!(await isRegisteredChannel(channel.id))) {    
       await addChannel(channel.id); 
+    if (!channel.isText()) { await interaction.reply({ content: "Tu dois sélectonner un salon textuel !", ephemeral: true }); return; }
       await interaction.editReply({ content: "Ce salon est maintenant configuré pour répondre aux phrases !" });
     } else 
       await interaction.editReply({ content: "Ce salon était déjà configuré pour répondre aux phrases." });
