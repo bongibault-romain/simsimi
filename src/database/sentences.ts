@@ -1,19 +1,21 @@
-export const exists = async (question: string, anwser?: string): Promise<boolean> => {
-    return false;
-};
+import path from "path";
+import * as fs from "fs";
+import stringSimilarity from "string-similarity";
+import { dirname } from "@discordx/importer";
 
-export const get = async (question: string): Promise<string[]> => {
-    return []
-};
+const sentencesFilePath = path.join(dirname(import.meta.url), "../../data/sentences.json");
 
-export const add = async (question: string, answer: string): Promise<void> => {
-    
-};
+export async function get(question: string) {
+  const sentences = JSON.parse(fs.readFileSync(sentencesFilePath, "utf8"));
 
-export const remove = async (question: string, answer: string): Promise<void> => {
+  if (sentences[question]) return sentences[question];
 
-}
+  const matchingSentences = stringSimilarity.findBestMatch(question, Object.keys(sentences));
 
-export const removeAll = async (question: string): Promise<void> => {
+  if (matchingSentences.bestMatch.rating > 0.3) {
+    const result = matchingSentences.ratings.filter(r => Math.abs(matchingSentences.bestMatch.rating - r.rating) < 0.1 && r.rating > 0.3).map(r => sentences[r.target]);
+    return result[Math.round(Math.random() * (result.length - 1))];
+  }
 
+  return null;
 }
