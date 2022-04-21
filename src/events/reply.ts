@@ -6,6 +6,7 @@ import LearnError from "../errors/learn/LearnError.js";
 import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
 import * as fastlearn from "../stores/fastlearn.js";
+import { getEmotionEmoji } from "../utils/emotion.js";
 
 @Discord()
 export abstract class Reply {
@@ -57,7 +58,8 @@ export abstract class Reply {
           if (fastlearnData) 
 
             try {
-              await learn(fastlearnData.question, message.content, message.author);
+              await learn(fastlearnData.question, message.content, null, message.author);
+
               await message.reply({
                 embeds: [
                   new MessageEmbed()
@@ -86,7 +88,20 @@ export abstract class Reply {
         if (!formatedMessage) return;
         const answers = await get(formatedMessage);
 
-        if (answers) { await message.reply(answers[Math.round(Math.random() * (answers.length - 1))]); return; }
+        if (answers) { 
+          const answer = answers[Math.round(Math.random() * (answers.length - 1))];
+
+          const reaction = getEmotionEmoji(answer.emotion);
+          if(reaction)
+            await message.react(reaction);
+
+          await message.reply({
+            content: answer.message,
+          });
+              
+            
+          return;
+        }
 
         const fastlearnMessage = await message.reply({
           embeds: [

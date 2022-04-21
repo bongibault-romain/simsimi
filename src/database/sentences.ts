@@ -1,14 +1,8 @@
-import path from "path";
-import * as fs from "fs";
 import stringSimilarity from "string-similarity";
-import { dirname } from "@discordx/importer";
 import knex from "./knex.js";
+import { Emotion } from "../typing/emotion.js";
 
-const sentencesFilePath = path.join(dirname(import.meta.url), "../../data/sentences.json");
-fs.existsSync(path.join(sentencesFilePath, "../")) || fs.mkdirSync(path.join(sentencesFilePath, "../"));
-fs.existsSync(sentencesFilePath) || fs.writeFileSync(sentencesFilePath, "{}");
-
-export async function add(sentence: string, answer: string, authorId: string) {
+export async function add(sentence: string, answer: string, emotion: Emotion | null, authorId: string) {
   let rawQuestion = await knex.select("*").from("questions").where({
     message: Buffer.from(sentence, "utf8").toString("base64"),
   }).first();
@@ -24,6 +18,7 @@ export async function add(sentence: string, answer: string, authorId: string) {
 
   await knex.table("answers").insert({
     author_discord_id: authorId,
+    emotion: emotion,
     message: Buffer.from(answer, "utf8").toString("base64"),
     question_id: rawQuestion.id,
   });
@@ -40,7 +35,10 @@ export async function get(question: string) {
       question_id: found.id,
     });
 
-    return foundAnwsers.length > 0 ? foundAnwsers.map((a) => Buffer.from(a.message, "base64").toString("utf8")) : null;
+    return foundAnwsers.length > 0 ? foundAnwsers.map((a) => ({
+      emotion: a.emotion as Emotion | null,
+      message:  Buffer.from(a.message, "base64").toString("utf8"),
+    })) : null;
   }
 
   const matchingSentences = stringSimilarity.findBestMatch(question, rawQuestion.map(q => Buffer.from(q.message, "base64").toString("utf8")));
@@ -52,7 +50,10 @@ export async function get(question: string) {
     const selectedQuestion = rawQuestion.find(q => q.message === Buffer.from(selected.target, "utf8").toString("base64"));
     const answers = (await knex.select("*").from("answers").where({
       question_id: selectedQuestion.id
-    })).map(a => Buffer.from(a.message, "base64").toString("utf8"));
+    })).map(a => ({
+      emotion: a.emotion as Emotion | null,
+      message: Buffer.from(a.message, "base64").toString("utf8"),
+    }));
     
     return answers.length > 0 ? answers : null;
   }
@@ -60,7 +61,7 @@ export async function get(question: string) {
   return null;
 }
 
-export async function exists(question: string, answer: string) {
+export async function exists(question: string, answer: string, emotion: Emotion | null) {
   const dQuestion = await knex.select("*").from("questions").where({
     message: Buffer.from(question, "utf8").toString("base64"),
   }).first();
@@ -68,6 +69,7 @@ export async function exists(question: string, answer: string) {
   if(!dQuestion) return false;
 
   return knex.select("*").from("answers").where({
+    emotion: emotion,
       message: Buffer.from(answer, "utf8").toString("base64"),
       question_id: dQuestion.id,
   }).first().then(a => !!a);
