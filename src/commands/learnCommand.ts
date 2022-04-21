@@ -19,7 +19,9 @@ export abstract class learnCommand {
       return;
     }
 
-    await interaction.deferReply();
+    await interaction.deferReply({
+      ephemeral: true,
+    });
 
     try {
       await learn(sentence, answer, interaction.user);
