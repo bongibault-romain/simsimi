@@ -33,7 +33,7 @@ export abstract class Reply {
             Tapes \`/\` pour trouver ton bonheur !
 
             Tu ne peux pas encore discuter avec moi sur ce serveur car les administrateurs n'ont pas encore défini de **salon Simsimi** !
-            Il peut être défini à l'aide de la commande \`\`/setup here\`\` !
+            Il peut être défini à l'aide de la commande \`\`/config channel add <#salon>\`\` !
 
             En attendant, tu peux me parler par messages privés !
 
