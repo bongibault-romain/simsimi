@@ -1,8 +1,10 @@
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed, MessageManager } from "discord.js";
 import { ArgsOf, Client, Discord, On } from "discordx";
 import { get } from "../database/sentences.js";
 import { isRegisteredChannel } from "../database/settings.js";
-import { format } from "../utils/formatMessages.js";
+import LearnError from "../errors/learn/LearnError.js";
+import { format, hasNitroEmotes } from "../utils/formatMessages.js";
+import learn from "../utils/learn.js";
 
 @Discord()
 abstract class Reply {
@@ -43,15 +45,44 @@ abstract class Reply {
 
     if (!message.author.bot && message.guildId && !message.content.includes('@')) {
       if (await isRegisteredChannel(message.channelId)) {
+        if (message.type === "REPLY" && message.reference && message.reference.messageId) {
+          const botMessage = await message.channel.messages.fetch(message.reference.messageId);
+
+          if (!botMessage.reference?.messageId || !botMessage.author.bot || !botMessage.embeds[0]?.description?.endsWith("``fastlearn``")) return;
+
+          const fastLearnSentence = await message.channel.messages.fetch(botMessage.reference.messageId);
+
+          if (!fastLearnSentence) { await message.reply("Je ne peux pas répondre à ce message car il a été supprimé !"); return; }
+
+          try {
+            learn(fastLearnSentence.content, message.content);
+            await message.reply({
+              embeds: [
+                new MessageEmbed()
+                  .setTitle("Merci !")
+                  .setDescription(`Je viens de m'apprendre à répondre à \`${fastLearnSentence.content}\` par \`${message.content}\` !
+                  
+                  ${hasNitroEmotes(message.content) ? "**Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite.**" : ""}`)
+                  .setColor("#ffcc00"),
+              ]
+            });
+          } catch (e) {
+            console.error(e);
+            if (e instanceof LearnError) { await e.replyToUser(message); return; }
+            console.error(e); return;
+          }
+
+        }
+
+        if (message.reference) return;
+
         const formatedMessage = format(message.content, { toLowerCase: true });
         if (!formatedMessage) return;
-        const answers = await get(formatedMessage);
-
-        console.log(answers);
+        const answers = get(formatedMessage);
 
         if (answers) { await message.reply(answers[Math.round(Math.random() * (answers.length - 1))]); return; }
 
-        await message.channel.send({
+        await message.reply({
           embeds: [
             new MessageEmbed()
               .setTitle(`Hey ${message.author.username} !`)
@@ -59,7 +90,9 @@ abstract class Reply {
 
               **Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre.
 
-              Sinon, utilises \`\`/learn\`\` !`)
+              Sinon, utilises \`\`/learn\`\` !
+              
+              \`\`fastlearn\`\``)
               .setColor("#3333ff")
           ]
         });
