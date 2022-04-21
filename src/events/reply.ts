@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { ArgsOf, Client, Discord, On } from "discordx";
 import { get } from "../database/sentences.js";
-import { isRegisteredChannel } from "../database/settings.js";
+import { isRegisteredChannel } from "../database/channels.js";
 import LearnError from "../errors/learn/LearnError.js";
 import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";

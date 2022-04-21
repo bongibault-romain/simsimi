@@ -1,6 +1,6 @@
 import { ApplicationCommandPermissions, Guild } from "discord.js";
 import * as fs from "fs";
-import { IDsFilePath } from "../database/settings.js";
+import { IDsFilePath } from "../database/channels.js";
 
 export async function guildOwner(guild: Guild): Promise<ApplicationCommandPermissions> {
   return { id: guild.ownerId, permission: true, type: "USER" };

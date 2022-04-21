@@ -1,6 +1,6 @@
 import { Channel, CommandInteraction, Role } from "discord.js";
 import { Discord, Permission, Slash, SlashGroup, SlashOption } from "discordx";
-import { addChannel, isRegisteredChannel, removeChannel } from "../database/settings.js";
+import { addChannel, isRegisteredChannel, removeChannel } from "../database/channels.js";
 import { bot } from "../index.js";
 import { admins, configAllowedRoles, guildOwner } from "../utils/permissionResolver.js";
 
