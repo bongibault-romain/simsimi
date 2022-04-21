@@ -1,4 +1,4 @@
-import { CommandInteraction, Role } from "discord.js";
+import { Channel, CommandInteraction, Role } from "discord.js";
 import { Discord, Permission, Slash, SlashGroup, SlashOption } from "discordx";
 import { addChannel, isRegisteredChannel, removeChannel } from "../database/settings.js";
 import { bot } from "../index.js";
@@ -10,27 +10,42 @@ import { admins, configAllowedRoles, guildOwner } from "../utils/permissionResol
 @Permission(admins)
 @Permission(configAllowedRoles)
 @SlashGroup({ description: "Configure le bot", name: "config" })
-@SlashGroup({ description: "Configure les salons du bot", name: "channel", root: "config" })
 @SlashGroup({ description: "Configure les permissions de configuration du bot", name: "permission", root: "config" })
+@SlashGroup({ description: "Configure les channels où le bot réponds aux messages.", name: "channel", root: "config" })
 export class Setup {
-  @SlashGroup("channel","config")
-  @Slash("here", { description: "Configure le bot pour qu'il réponde à toutes les phrases de ce salon" })
-  private async here(
-    @SlashOption("activation", { description: "Active ou désactive le bot dans ce salon", required: false, type: "BOOLEAN" })
-    enable = true,
+  @SlashGroup("channel", "config")
+  @Slash("remove", { description: "Configure le bot pour qu'il ne réponde plus à toutes les phrases de un salon" })
+  private async remove(
+    @SlashOption("channel", { description: "Active ou désactive le bot dans ce salon", required: true, type: "CHANNEL" })
+    channel: Channel,
     interaction: CommandInteraction) {
     if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
-    if (enable && isRegisteredChannel(interaction.channel?.id)) {
-      await interaction.reply({ content: "Ce salon est déjà configuré pour répondre aux phrases !", ephemeral: true }); return;
-    }
-    if (!enable && !isRegisteredChannel(interaction.channel?.id)) {
-      await interaction.reply({ content: "Ce salon n'est pas configuré pour répondre aux phrases !", ephemeral: true }); return;
-    }
+    
+      await interaction.deferReply({ephemeral: true});
 
-    await interaction.deferReply();
+    if (isRegisteredChannel(channel.id)) {    
+      removeChannel(interaction.channel.id); 
+      await interaction.editReply({ content: "Ce salon n'est plus configuré pour répondre aux phrases !" });
+    } else 
+      await interaction.editReply({ content: "Ce salon n'était pas configuré pour répondre aux phrases." });
+    
+  }
+  @SlashGroup("channel", "config")
+  @Slash("add", { description: "Configure le bot pour qu'il réponde à toutes les phrases de un salon" })
+  private async add(
+    @SlashOption("channel", { description: "Active ou désactive le bot dans ce salon", required: true, type: "CHANNEL" })
+    channel: Channel,
+    interaction: CommandInteraction) {
+    if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
+    
+      await interaction.deferReply({ephemeral: true});
 
-    if (enable) { addChannel(interaction.channel.id); await interaction.editReply({ content: "Ce salon est maintenant configuré pour répondre aux phrases !" }); }
-    else { removeChannel(interaction.channel.id); await interaction.editReply({ content: "Ce salon n'est plus configuré pour répondre aux phrases !" }); }
+    if (!isRegisteredChannel(channel.id)) {    
+      addChannel(interaction.channel.id); 
+      await interaction.editReply({ content: "Ce salon est maintenant configuré pour répondre aux phrases !" });
+    } else 
+      await interaction.editReply({ content: "Ce salon était déjà configuré pour répondre aux phrases." });
+    
   }
 
   private async refreshPermissions(interaction: CommandInteraction) {
