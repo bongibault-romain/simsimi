@@ -22,7 +22,7 @@ export abstract class learnCommand {
     await interaction.deferReply();
 
     try {
-      learn(sentence, answer, interaction.user);
+      await learn(sentence, answer, interaction.user);
       await interaction.editReply({
         embeds: [
           new MessageEmbed()
@@ -35,7 +35,7 @@ export abstract class learnCommand {
       });
     } catch (e) {
       if (e instanceof LearnError) 
-        await e.replyToUser(interaction);
+        return interaction.editReply(e.message);
       
       console.error(e);
     }

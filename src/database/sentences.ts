@@ -59,3 +59,16 @@ export async function get(question: string) {
 
   return null;
 }
+
+export async function exists(question: string, answer: string) {
+  const dQuestion = await knex.select("*").from("questions").where({
+    message: Buffer.from(question, "utf8").toString("base64"),
+  }).first();
+  
+  if(!dQuestion) return false;
+
+  return knex.select("*").from("answers").where({
+      message: Buffer.from(answer, "utf8").toString("base64"),
+      question_id: dQuestion.id,
+  }).first().then(a => !!a);
+}
