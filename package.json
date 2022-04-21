@@ -14,7 +14,13 @@
   "nodemonConfig": {
     "ext": "js,ts",
     "watch": "src",
-    "ignore": ["node_modules", "build", "package.json", "tsconfig.json", "data"]
+    "ignore": [
+      "node_modules",
+      "build",
+      "package.json",
+      "tsconfig.json",
+      "data"
+    ]
   },
   "repository": {
     "type": "git",
@@ -45,7 +51,6 @@
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
     "eslint": "^8.13.0",
-    "nodemon": "^2.0.15",
-    "ts-node": "^10.7.0"
+    "nodemon": "^2.0.15"
   }
 }
