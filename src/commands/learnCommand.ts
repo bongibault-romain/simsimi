@@ -32,7 +32,7 @@ export abstract class learnCommand {
             .setFields([
               {
                 inline: true,
-                name: "Lorsqu'on me dira",
+                name: "Lorsque l'on me dira",
                 value: sentence,
               },
               {
