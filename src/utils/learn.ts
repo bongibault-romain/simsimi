@@ -10,8 +10,6 @@ export default function learn(sentence: string, answer: string) {
   const formatedSentence = format(sentence, { toLowerCase: true });
   const formatedAnswer = format(answer);
 
-  console.log(`Learn: ${formatedSentence} => ${formatedAnswer}`, !formatedSentence, !formatedAnswer);
-
   if (!formatedSentence || !formatedAnswer) throw new LearnEmptyStringError;
 
   if (formatedSentence.length > MAX_LENGTH || formatedAnswer.length > MAX_LENGTH) throw new LearnTooLongError(MAX_LENGTH);
