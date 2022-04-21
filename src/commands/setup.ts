@@ -24,8 +24,8 @@ export class Setup {
     
       await interaction.deferReply({ephemeral: true});
 
-    if (isRegisteredChannel(channel.id)) {    
-      removeChannel(interaction.channel.id); 
+    if (await isRegisteredChannel(channel.id)) {    
+      await removeChannel(channel.id); 
       await interaction.editReply({ content: "Ce salon n'est plus configuré pour répondre aux phrases !" });
     } else 
       await interaction.editReply({ content: "Ce salon n'était pas configuré pour répondre aux phrases." });
@@ -41,8 +41,8 @@ export class Setup {
     
       await interaction.deferReply({ephemeral: true});
 
-    if (!isRegisteredChannel(channel.id)) {    
-      addChannel(interaction.channel.id); 
+    if (!(await isRegisteredChannel(channel.id))) {    
+      await addChannel(channel.id); 
       await interaction.editReply({ content: "Ce salon est maintenant configuré pour répondre aux phrases !" });
     } else 
       await interaction.editReply({ content: "Ce salon était déjà configuré pour répondre aux phrases." });
@@ -66,17 +66,17 @@ export class Setup {
     autorisation: boolean,
     interaction: CommandInteraction) {
     if (!role) { await interaction.reply({ content: "Tu dois mentionner un role pour utiliser cette commande !", ephemeral: true }); return; }
-    if (autorisation && isAllowedRole(role.id)) {
+    if (autorisation && await isAllowedRole(role.id)) {
       await interaction.reply({ content: "Ce role est déjà autorisé à utiliser cette commande !", ephemeral: true }); return;
     }
-    if (!autorisation && !isAllowedRole(role.id)) {
+    if (!autorisation && !(await isAllowedRole(role.id))) {
       await interaction.reply({ content: "Ce role n'est pas autorisé à utiliser cette commande !", ephemeral: true }); return;
     }
 
     await interaction.deferReply();
 
-    if (autorisation) { addRole(role.id); await interaction.editReply({ content: "Ce role est maintenant autorisé à utiliser cette commande !" }); }
-    else { removeRole(role.id); await interaction.editReply({ content: "Ce role n'est plus autorisé à utiliser cette commande !" }); }
+    if (autorisation) { await addRole(role.id); await interaction.editReply({ content: "Ce role est maintenant autorisé à utiliser cette commande !" }); }
+    else { await removeRole(role.id); await interaction.editReply({ content: "Ce role n'est plus autorisé à utiliser cette commande !" }); }
 
     await this.refreshPermissions(interaction);
   }

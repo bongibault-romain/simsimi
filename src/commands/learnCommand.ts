@@ -22,7 +22,7 @@ export abstract class learnCommand {
     await interaction.deferReply();
 
     try {
-      learn(sentence, answer);
+      learn(sentence, answer, interaction.user);
       await interaction.editReply({
         embeds: [
           new MessageEmbed()

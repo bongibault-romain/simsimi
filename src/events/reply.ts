@@ -44,7 +44,7 @@ export abstract class Reply {
     }
 
     if (!message.author.bot && message.guildId && !message.content.includes("@")) 
-      if (isRegisteredChannel(message.channelId)) {
+      if (await isRegisteredChannel(message.channelId)) {
         if (message.type === "REPLY" && message.reference && message.reference.messageId) {
           const botMessage = await message.channel.messages.fetch(message.reference.messageId);
 
@@ -55,7 +55,7 @@ export abstract class Reply {
           if (!fastLearnSentence) { await message.reply("Je ne peux pas répondre à ce message car il a été supprimé !"); return; }
 
           try {
-            learn(fastLearnSentence.content, message.content);
+            learn(fastLearnSentence.content, message.content, message.author);
             await message.reply({
               embeds: [
                 new MessageEmbed()
@@ -78,7 +78,7 @@ export abstract class Reply {
 
         const formatedMessage = format(message.content, { toLowerCase: true });
         if (!formatedMessage) return;
-        const answers = get(formatedMessage);
+        const answers = await get(formatedMessage);
 
         if (answers) { await message.reply(answers[Math.round(Math.random() * (answers.length - 1))]); return; }
 

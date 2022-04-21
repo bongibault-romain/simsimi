@@ -1,3 +1,4 @@
+import { User } from "discord.js";
 import { add } from "../database/sentences.js";
 import LearnAtCharacterNotAllowedError from "../errors/learn/LearnAtCharacterNotAllowedError.js";
 import LearnEmptyStringError from "../errors/learn/LearnEmptyStringError.js";
@@ -6,7 +7,7 @@ import { format } from "./formatMessages.js";
 
 const MAX_LENGTH = parseInt(process.env.MAX_LENGTH || "") || 400;
 
-export default function learn(sentence: string, answer: string) {
+export default function learn(sentence: string, answer: string, author: User) {
   const formatedSentence = format(sentence, { toLowerCase: true });
   const formatedAnswer = format(answer);
 
@@ -16,5 +17,5 @@ export default function learn(sentence: string, answer: string) {
 
   if (formatedSentence.includes("@") || formatedAnswer.includes("@")) throw new LearnAtCharacterNotAllowedError;
 
-  add(formatedSentence, formatedAnswer);
+  add(formatedSentence, formatedAnswer, author.id);
 }
