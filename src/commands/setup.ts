@@ -49,11 +49,9 @@ export class Setup {
   }
 
   private async refreshPermissions(interaction: CommandInteraction) {
-    await interaction.deferReply();
-
     await bot.initApplicationPermissions();
 
-    await interaction.editReply({ content: "Je viens de réactualiser les permissions requises pour les commandes !" });
+    await interaction.followUp({ content: "Je viens de réactualiser les permissions requises pour les commandes !" });
   }
 
   @SlashGroup("permission", "config")
