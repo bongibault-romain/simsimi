@@ -9,46 +9,46 @@ console.log(path.join(IDsFilePath, "../"));
 fs.existsSync(path.join(IDsFilePath, "../")) || fs.mkdirSync(path.join(IDsFilePath, "../"));
 fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], guilds: [] }));
 
-export async function addChannel(channelId: string) {
+export function addChannel(channelId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     ids.channels.push(channelId);
     fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
 }
 
-export async function removeChannel(channelId: string) {
+export function removeChannel(channelId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     ids.channels = ids.channels.filter((c: string) => c !== channelId);
     fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
 }
 
-export async function getChannels() {
+export function getChannels(): string[] {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     return ids.channels;
 }
 
-export async function addGuild(guildId: string) {
+export function addGuild(guildId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     ids.guilds.push(guildId);
     fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
 }
 
-export async function removeGuild(guildId: string) {
+export function removeGuild(guildId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     ids.guilds = ids.guilds.filter((g: string) => g !== guildId);
     fs.writeFileSync(IDsFilePath, JSON.stringify(ids));
 }
 
-export async function getGuilds() {
+export function getGuilds(): string[] {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     return ids.guilds;
 }
 
-export async function isRegisteredGuild(guildId: string) {
+export function isRegisteredGuild(guildId: string): boolean {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     return ids.guilds.includes(guildId);
 }
 
-export async function isRegisteredChannel(channelId: string) {
+export function isRegisteredChannel(channelId: string): boolean {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     return ids.channels.includes(channelId);
 }

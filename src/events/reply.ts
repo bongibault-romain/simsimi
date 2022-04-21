@@ -44,7 +44,7 @@ export abstract class Reply {
     }
 
     if (!message.author.bot && message.guildId && !message.content.includes("@")) 
-      if (await isRegisteredChannel(message.channelId)) {
+      if (isRegisteredChannel(message.channelId)) {
         if (message.type === "REPLY" && message.reference && message.reference.messageId) {
           const botMessage = await message.channel.messages.fetch(message.reference.messageId);
 
