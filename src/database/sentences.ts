@@ -5,6 +5,11 @@ import { dirname } from "@discordx/importer";
 
 const sentencesFilePath = path.join(dirname(import.meta.url), "../../data/sentences.json");
 
+console.log(path.join(sentencesFilePath, "../"));
+
+fs.existsSync(path.join(sentencesFilePath, "../")) || fs.mkdirSync(path.join(sentencesFilePath, "../"));
+fs.existsSync(sentencesFilePath) || fs.writeFileSync(sentencesFilePath, "{}");
+
 export function add(sentence: string, answer: string) {
   const sentences = JSON.parse(fs.readFileSync(sentencesFilePath, "utf8"));
 

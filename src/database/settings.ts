@@ -4,6 +4,11 @@ import path from "path";
 
 const IDsFilePath = path.join(dirname(import.meta.url), "../../data/IDs.json");
 
+console.log(path.join(IDsFilePath, "../"));
+
+fs.existsSync(path.join(IDsFilePath, "../")) || fs.mkdirSync(path.join(IDsFilePath, "../"));
+fs.existsSync(IDsFilePath) || fs.writeFileSync(IDsFilePath, JSON.stringify({ channels: [], guilds: [] }));
+
 export async function addChannel(channelId: string) {
     const ids = JSON.parse(fs.readFileSync(IDsFilePath, "utf8"));
     ids.channels.push(channelId);
