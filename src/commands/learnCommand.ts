@@ -19,9 +19,11 @@ export abstract class learnCommand {
       return;
     }
 
+    await interaction.deferReply();
+
     try {
       learn(sentence, answer);
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [
           new MessageEmbed()
             .setTitle("Merci !")
