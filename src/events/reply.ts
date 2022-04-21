@@ -90,9 +90,7 @@ export abstract class Reply {
 
               **Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre.
 
-              Sinon, utilises \`\`/learn\`\` !
-              
-              \`\`fastlearn\`\``)
+              Sinon, utilises \`\`/learn\`\` !`)
               .setColor("#3333ff")
           ]
         });
