@@ -3,7 +3,7 @@ import { Client } from "discordx";
 import { getHorodateConsole } from "./horodatage.js";
 
 export default function logInteraction(interaction: Interaction, client: Client) {
-    let log = `${getHorodateConsole()}\t${interaction.guild?.name}\t${interaction.user.username}\t${interaction.type}`
+    let log = `${getHorodateConsole()}\t${interaction.guild?.name}\t${interaction.user.username}\t${interaction.type}`;
 
     if (interaction.isCommand())
         log += `\t${interaction.commandName}`;

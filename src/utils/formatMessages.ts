@@ -5,5 +5,5 @@ export function format(message: string, options?: { toLowerCase: boolean }) {
 }
 
 export function hasNitroEmotes(message: string) {
-  return message.indexOf(":") + 1 != message.lastIndexOf(":") + 1;
+  return message.indexOf(":") + 1 !== message.lastIndexOf(":") + 1;
 }

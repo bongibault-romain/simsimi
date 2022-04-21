@@ -14,7 +14,10 @@ dotenv.config({ path: "config/.env" });
 
 function handleExit(signal: NodeJS.Signals) {
     console.info(`${getHorodateConsole()}\t[STOP]\tSignal ${signal} reçu.`);
-    bot.user?.setPresence({ status: "idle", activities: [{ name: "Arrêt en cours", type: "COMPETING" }] })
+    bot.user?.setPresence({
+        activities: [{ name: "Arrêt en cours", type: "COMPETING" }],
+        status: "idle",
+    });
     bot.destroy();
     console.log(`${getHorodateConsole()}\t[STOP]\tArrêt du bot.`);
     process.exit(0);
@@ -62,9 +65,12 @@ async function start() {
     await bot.login(process.env.TOKEN);
 }
 
-async function restart() {
+export async function restart() {
     console.info(`${getHorodateConsole()}\t[RESTART]\tRédémarrage du bot.`);
-    bot.user?.setPresence({ status: "idle", activities: [{ name: "Redémarrage en cours", type: "COMPETING" }] })
+    bot.user?.setPresence({
+        activities: [{ name: "Redémarrage en cours", type: "COMPETING" }],
+        status: "idle",
+    });
 
     bot.destroy();
     setupBotClient();

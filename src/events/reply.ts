@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageManager } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { ArgsOf, Client, Discord, On } from "discordx";
 import { get } from "../database/sentences.js";
 import { isRegisteredChannel } from "../database/settings.js";
@@ -7,7 +7,7 @@ import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
 
 @Discord()
-abstract class Reply {
+export abstract class Reply {
   @On("messageCreate")
   private async reply(
     [message]: ArgsOf<"messageCreate">,
@@ -40,10 +40,10 @@ abstract class Reply {
             })
             .setColor("#ffcc00"),
         ]
-      })
+      });
     }
 
-    if (!message.author.bot && message.guildId && !message.content.includes('@')) {
+    if (!message.author.bot && message.guildId && !message.content.includes("@")) 
       if (await isRegisteredChannel(message.channelId)) {
         if (message.type === "REPLY" && message.reference && message.reference.messageId) {
           const botMessage = await message.channel.messages.fetch(message.reference.messageId);
@@ -97,6 +97,6 @@ abstract class Reply {
           ]
         });
       }
-    }
+    
   }
 }
