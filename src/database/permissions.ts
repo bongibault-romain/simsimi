@@ -20,7 +20,7 @@ export async function removeRole(roleId: string) {
 }
 
 export async function getRoles(): Promise<string[]> {
-  return knex.select("*").from("permissions");
+  return (await knex.select("*").from("permissions")).map((row: any) => row.role_discord_id);
 }
 
 export async function isAllowedRole(roleId: string): Promise<boolean> {
