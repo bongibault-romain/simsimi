@@ -6,7 +6,7 @@ import learn from "../utils/learn.js";
 
 @Discord()
 export abstract class learnCommand {
-  @Slash("learn")
+  @Slash("learn", { description: "Apprends à réagir à une phrase" })
   private async learn(
     @SlashOption("question", { description: "Phrase à laquelle je dois réagir" })
     sentence: string,
