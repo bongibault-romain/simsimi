@@ -70,6 +70,7 @@ export abstract class Reply {
               });
 
               fastlearn.remove(message.reference.messageId);
+              return;
             } catch (e) {
               console.error(e);
               if (e instanceof LearnError) { await e.replyToUser(message); return; }
@@ -79,7 +80,7 @@ export abstract class Reply {
         
         }
 
-        // if (message.reference && (await message.channel.messages.resolve(message.reference.messageId)).author.bot) return;
+        if (message.reference?.messageId && !message.channel.messages.resolve(message.reference.messageId)?.author.bot) return;
 
         const formatedMessage = format(message.content, { toLowerCase: true });
         if (!formatedMessage) return;
