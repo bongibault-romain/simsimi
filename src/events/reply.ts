@@ -1,4 +1,4 @@
-import { MessageEmbed } from "discord.js";
+import { MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { ArgsOf, Client, Discord, On } from "discordx";
 import { get } from "../database/sentences.js";
 import { isRegisteredChannel } from "../database/channels.js";
@@ -19,7 +19,12 @@ export abstract class Reply {
     if (!message.reference && message.mentions.users.has(bot.user.id)) {
       await message.react("💬");
 
+      const button = new MessageButton().setLabel("Invite moi sur ton serveur !").setURL("https://discord.com/api/oauth2/authorize?client_id=842013575341801483&permissions=412317215808&scope=bot%20applications.commands").setStyle("LINK");
+
       await message.channel.send({
+        components: [
+          new MessageActionRow().setComponents(button)
+        ],
         embeds: [
           new MessageEmbed()
             .setTitle(`Salut ${message.member?.displayName} !`)
@@ -35,12 +40,12 @@ export abstract class Reply {
 
             Tu peux donc tomber sur **n'importe quoi** ! Fais attention !
 
-            Si tu rencontres un message que tu juges inapproprié, tu peux le signaler à mon créateur <@238684010182606850> !`)
+            Si tu rencontres un message que tu juges inapproprié, tu peux le signaler à mes créateurs <@238684010182606850> et <@276084901583781888> !`)
             .setFooter({
               text: `Je suis présent sur ${bot.guilds.cache.size} serveurs ! Il y a plus de ${bot.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)} membres sur tous ces serveurs !`,
             })
             .setColor("#ffcc00"),
-        ]
+        ],
       });
     }
 
@@ -63,7 +68,7 @@ export abstract class Reply {
                     .setColor("#ffcc00"),
                 ]
               });
-              
+
               fastlearn.remove(message.reference.messageId);
             } catch (e) {
               console.error(e);
