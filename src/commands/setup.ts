@@ -33,8 +33,6 @@ export class Setup {
     else { removeChannel(interaction.channel.id); await interaction.editReply({ content: "Ce salon n'est plus configuré pour répondre aux phrases !" }); }
   }
 
-  @SlashGroup("permission", "config")
-  @Slash("refreshpermissions", { description: "Réactualise les permissions requises des commandes du bot" })
   private async refreshPermissions(interaction: CommandInteraction) {
     await interaction.deferReply();
 
@@ -48,7 +46,7 @@ export class Setup {
   private async role(
     @SlashOption("role", { description: "Le role à configurer" })
     role: Role,
-    @SlashOption("autorisation", { description: "Autorise ou non le role à utiliser la commande", required: false })
+    @SlashOption("autorisation", { description: "Autorise ou non le role à utiliser la commande", required: true })
     autorisation: boolean,
     interaction: CommandInteraction) {
     if (!role) { await interaction.reply({ content: "Tu dois mentionner un role pour utiliser cette commande !", ephemeral: true }); return; }
@@ -63,5 +61,7 @@ export class Setup {
 
     if (autorisation) { addChannel(role.id); await interaction.editReply({ content: "Ce role est maintenant autorisé à utiliser cette commande !" }); }
     else { removeChannel(role.id); await interaction.editReply({ content: "Ce role n'est plus autorisé à utiliser cette commande !" }); }
+
+    await this.refreshPermissions(interaction);
   }
 }
