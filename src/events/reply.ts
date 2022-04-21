@@ -86,7 +86,7 @@ export abstract class Reply {
           embeds: [
             new MessageEmbed()
               .setTitle(`Hey ${message.author.username} !`)
-              .setDescription(`Je ne sais pas quoi répondre à cela. Peuxtu me l'apprendre ?
+              .setDescription(`Je ne sais pas quoi répondre à cela. Peux-tu me l'apprendre ?
 
               **Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre.
 
