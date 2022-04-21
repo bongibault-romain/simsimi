@@ -21,7 +21,7 @@ export abstract class Reply {
       await message.channel.send({
         embeds: [
           new MessageEmbed()
-            .setTitle(`Salut ${message.member?.user.displayName} !`)
+            .setTitle(`Salut ${message.member?.displayName} !`)
             .setDescription(`Tu cherches une liste des commandes ?
             Tapes \`/\` pour trouver ton bonheur !
 
@@ -85,7 +85,7 @@ export abstract class Reply {
         await message.reply({
           embeds: [
             new MessageEmbed()
-              .setTitle(`Hey ${message.member?.user.displayName} !`)
+              .setTitle(`Hey ${message.member?.displayName} !`)
               .setDescription(`Je ne sais pas quoi répondre à cela. Peux-tu me l'apprendre ?
 
               **Méthode rapide** : Réponds à ce message en y écrivant la réponse de ton message pour me l'apprendre.
