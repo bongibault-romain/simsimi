@@ -5,7 +5,7 @@ import { add, exists, remove } from "../database/ingored_users.js";
 @Discord()
 export class Ingore {
 
-    @Slash("ignore", { description: "Permet de vous faire ignorer par le bot." })
+    @Slash("ignore", { description: "Te permet d'être ignoré par moi-même." })
     public async ignore(interaction: CommandInteraction) {
 
         await interaction.deferReply({
