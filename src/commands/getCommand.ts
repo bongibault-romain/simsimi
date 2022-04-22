@@ -7,12 +7,13 @@ import { format } from "../utils/formatMessages.js";
 export class Get {
 
     @Slash("get", {
-        description: "Permet de récupérer toutes les réponses à une question",
+        description: "Pour observer les réponses d'une question.",
     })
     public async get(
         @SlashOption("question", {
             required: true,
             type: "STRING",
+            description: "Question à laquelle je dois obtenir les réponses.",
         })
         question: string,
         interaction: CommandInteraction
@@ -27,7 +28,7 @@ export class Get {
             interaction.editReply({
                 embeds: [
                     new MessageEmbed()
-                        .setTitle("Voici les réponses possible pour cette question :")
+                        .setTitle("Voici les réponses possibles pour cette question :")
                         .setDescription(answers.map(a => `- \`${a.message}\` (${a.id})`).join("\n"))
                         .setColor("AQUA"),
                 ]
