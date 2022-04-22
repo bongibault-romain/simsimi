@@ -1,5 +1,7 @@
 import knex from "./knex.js";
-import { get } from "./questions.js";
+import * as questions from "./questions.js";
+
+// TODO: ENCODE AND DECODE
 
 export interface Answer {
     id: number;
@@ -14,7 +16,7 @@ export async function countAll(): Promise<number> {
 }
 
 export async function getAllFromQuestion(questionMessage: string): Promise<Answer | null> {
-    const question = await get(questionMessage);
+    const question = await questions.get(questionMessage);
 
     if(!question) return null;
 
@@ -22,15 +24,35 @@ export async function getAllFromQuestion(questionMessage: string): Promise<Answe
 }
 
 export async function getFromQuestion(questionMessage: string, answerMessage: string): Promise<Answer | null> {
-    const question = await get(questionMessage);
+    const question = await questions.get(questionMessage);
 
     if(!question) return null;
 
-    return knex.select("*").from("answers").where({  message: answerMessage, question_id: question.id }).first() || null;
+    return knex.select("*").from("answers").where({  message: Buffer.from(answerMessage, "utf8").toString("base64"), question_id: question.id }).first() || null;
+}
+
+export async function addFromQuestion(questionMessage: string, answerMessage: string, authorId: string | null) {
+    const question = await questions.get(questionMessage);
+
+    if(!question) throw new Error("Missing question");
+    
+    return knex.table("answers").insert({
+        author_discord_id: authorId,
+        message: Buffer.from(answerMessage, "utf8").toString("base64"),
+        question_id: question.id,
+    });
+}
+
+export async function addFromQuestionId(questionId: number, answerMessage: string, authorId: string | null) {
+    return knex.table("answers").insert({
+        author_discord_id: authorId,
+        message: Buffer.from(answerMessage, "utf8").toString("base64"),
+        question_id: questionId,
+    });
 }
 
 export async function removeAllFromQuestion(questionMessage: string) {
-    const question = await get(questionMessage);
+    const question = await questions.get(questionMessage);
 
     if(!question) return;
 
@@ -39,7 +61,7 @@ export async function removeAllFromQuestion(questionMessage: string) {
 
 
 export async function removeFromQuestion(questionMessage: string, answerMessage: string) {
-    const question = await get(questionMessage);
+    const question = await questions.get(questionMessage);
 
     if(!question) return;
 
@@ -51,7 +73,7 @@ export async function existsFromQuestion(questionMessage: string, answerMessage:
 }
 
 export async function countFromQuestion(questionMessage: string): Promise<number> {
-    const question = await get(questionMessage);
+    const question = await questions.get(questionMessage);
 
     if(!question) return 0;
 

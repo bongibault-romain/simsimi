@@ -7,6 +7,9 @@ import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
 import * as fastlearn from "../stores/fastlearn.js";
 import { getEmotionEmoji } from "../utils/emotion.js";
+import * as questions from "./../database/questions.js";
+import * as answers from "./../database/answers.js";
+import { getHorodateConsole } from "../utils/horodatage.js";
 
 @Discord()
 export abstract class Reply {
@@ -33,7 +36,7 @@ export abstract class Reply {
             Tapes \`/\` pour trouver ton bonheur !
 
             Tu ne peux pas encore discuter avec moi sur ce serveur car les administrateurs n'ont pas encore défini de **salon Simsimi** !
-            Il peut être défini à l'aide de la commande \`\`/config channel add <#salon>\`\` !
+            Pour définir ce salon il faut contacter les gérants du bot  <@238684010182606850> et <@276084901583781888> (temporaire).
 
             En attendant, tu peux me parler par messages privés !
 
@@ -48,6 +51,29 @@ export abstract class Reply {
             .setColor("#ffcc00"),
         ],
       });
+    }
+
+    if(message.reference && !message.author.bot && !message.content.includes("@") && message.content.length > 0 && message.reference.messageId) {
+      const channel = (await bot.channels.fetch(message.reference.channelId));
+
+      if(channel?.isText()) {
+        const replyTo = await channel.messages.fetch(message.reference.messageId );
+
+
+        if(format(replyTo.content).length > 0 && !format(replyTo.content).includes("@") && !replyTo.author.bot) {
+
+
+          const q = await questions.get(format(replyTo.content));
+          let qId = q?.id;
+
+          if(!qId) 
+            qId = await questions.add(format(replyTo.content), null);          
+
+          await answers.addFromQuestionId(qId, format(message.content), null);
+
+          console.log(`${getHorodateConsole()}\t[INFO]\tLearn from public channel !`);
+        }
+      }
     }
 
     if (!message.author.bot && message.guildId && !message.content.includes("@")) 
@@ -86,10 +112,10 @@ export abstract class Reply {
 
         const formatedMessage = format(message.content, { toLowerCase: true });
         if (!formatedMessage) return;
-        const answers = await get(formatedMessage);
+        const answers_ = await get(formatedMessage);
 
-        if (answers) { 
-          const answer = answers[Math.round(Math.random() * (answers.length - 1))];
+        if (answers_) { 
+          const answer = answers_[Math.round(Math.random() * (answers_.length - 1))];
 
           const reaction = getEmotionEmoji(answer.emotion);
           if(reaction)
