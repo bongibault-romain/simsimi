@@ -7,15 +7,15 @@ import learn from "../utils/learn.js";
 
 @Discord()
 export abstract class LearnCommand {
-  @Slash("learn", { description: "Apprends à réagir à une phrase (Ton identifiant Discord sera enregistré)" })
+  @Slash("learn", { description: "Pour m'apprendre de nouvelles choses ! (Ton identifiant Discord sera enregistré)" })
   private async learn(
     @SlashOption("question", { description: "Phrase à laquelle je dois réagir", required: true, })
     sentence: string,
-    @SlashOption("réponse", { description: "Phrase par laquelle je devrais répondre", required: true, })
+    @SlashOption("réponse", { description: "Phrase que je répondrai", required: true, })
     answer: string,
     @SlashChoice()
     @SlashChoice({ name: "Amoureux", value: "LOVE" }, { name: "Interrogatif", value: "ASKING" }, { name: "Énervé", value: "ANGRY" }, { name: "Endormi", value: "SLEEPY" }, { name: "Dégouté", value: "DISGUSTED" })
-    @SlashOption("émotion", { description: "L'émotion que j'aurais quand je réagirai", required: false })
+    @SlashOption("émotion", { description: "Réaction que j'aurai face à la question", required: false })
     emotion: Emotion,
     interaction: CommandInteraction
   ) {    
