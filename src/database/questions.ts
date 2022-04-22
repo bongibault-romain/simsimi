@@ -7,8 +7,6 @@ export interface Question {
     created_at: Date;
 }
 
-// TODO: ENCODE AND DECODE
-
 export async function count(): Promise<number> {
   return ((await knex.table("questions").count("* as count"))[0] as any).count;
 }
@@ -22,7 +20,10 @@ export async function exists(question: string) {
 }
 
 export async function getAll(): Promise<Question[]> {
-    return knex.select("*").from("questions");
+    return (await knex.select("*").from("questions")).map((question: Question) => ({
+        ...question,
+        message: Buffer.from(question.message, "base64").toString("utf8"),
+    }));
 }
 
 /**

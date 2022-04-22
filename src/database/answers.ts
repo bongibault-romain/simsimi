@@ -1,8 +1,6 @@
 import knex from "./knex.js";
 import * as questions from "./questions.js";
 
-// TODO: ENCODE AND DECODE
-
 export interface Answer {
     id: number;
     message: string;
@@ -15,12 +13,15 @@ export async function countAll(): Promise<number> {
     return ((await knex.table("answers").count("* as count"))[0] as any).count;
 }
 
-export async function getAllFromQuestion(questionMessage: string): Promise<Answer | null> {
+export async function getAllFromQuestion(questionMessage: string): Promise<Answer[]> {
     const question = await questions.get(questionMessage);
 
-    if(!question) return null;
+    if(!question) return [];
 
-    return knex.select("*").from("answers").where({ question_id: question.id }).first() || null;
+    return (await knex.select("*").from("answers").where({ question_id: question.id })).map((answer: Answer) => ({
+        ...answer,
+        message: Buffer.from(answer.message, "base64").toString("utf8"),
+    }));
 }
 
 export async function getFromQuestion(questionMessage: string, answerMessage: string): Promise<Answer | null> {
@@ -65,7 +66,7 @@ export async function removeFromQuestion(questionMessage: string, answerMessage:
 
     if(!question) return;
 
-    return knex.table("answers").where({ message: answerMessage, question_id: question.id }).delete();
+    return knex.table("answers").where({ message: Buffer.from(answerMessage, "utf8").toString("base64"), question_id: question.id }).delete();
 }
 
 export async function existsFromQuestion(questionMessage: string, answerMessage: string) {
