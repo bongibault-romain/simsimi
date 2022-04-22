@@ -10,6 +10,7 @@ import { getEmotionEmoji } from "../utils/emotion.js";
 import * as questions from "./../database/questions.js";
 import * as answers from "./../database/answers.js";
 import { getHorodateConsole } from "../utils/horodatage.js";
+import { exists } from "../database/ingored_users.js";
 
 @Discord()
 export abstract class Reply {
@@ -19,6 +20,8 @@ export abstract class Reply {
     bot: Client
   ) {
     if (!bot.user) return;
+
+    if(await exists(message.author.id)) return;
 
     if (!message.reference && message.mentions.users.has(bot.user.id)) {
       await message.react("💬");
