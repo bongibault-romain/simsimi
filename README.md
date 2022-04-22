@@ -61,6 +61,12 @@ CREATE TABLE IF NOT EXISTS `channels` (
   PRIMARY KEY (`channel_discord_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16;
 
+-- Listage de la structure de table simsimi. ignored_users
+CREATE TABLE IF NOT EXISTS `ignored_users` (
+  `user_discord_id` varchar(50) NOT NULL,
+  PRIMARY KEY (`user_discord_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf16;
+
 
 -- Listage de la structure de table simsimi. permissions
 CREATE TABLE IF NOT EXISTS `permissions` (
