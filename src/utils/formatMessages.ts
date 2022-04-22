@@ -1,5 +1,5 @@
 export function format(message: string, options?: { toLowerCase: boolean }) {
-  let res = message.replace("`", "").trim();
+  let res = message.replaceAll("`", "").trim();
   if (options?.toLowerCase) res = res.toLowerCase();
   return res;
 }
