@@ -7,8 +7,6 @@ import { format, hasNitroEmotes } from "../utils/formatMessages.js";
 import learn from "../utils/learn.js";
 import * as fastlearn from "../stores/fastlearn.js";
 import { getEmotionEmoji } from "../utils/emotion.js";
-import * as questions from "./../database/questions.js";
-import * as answers from "./../database/answers.js";
 import { getHorodateConsole } from "../utils/horodatage.js";
 import { exists } from "../database/ingored_users.js";
 
@@ -63,19 +61,17 @@ export abstract class Reply {
         const replyTo = await channel.messages.fetch(message.reference.messageId );
 
 
-        if(format(replyTo.content).length > 0 && !format(replyTo.content).includes("@") && !replyTo.author.bot) {
+        if(format(replyTo.content).length > 0 && !format(replyTo.content).includes("@") && !replyTo.author.bot) 
 
-
-          const q = await questions.get(format(replyTo.content));
-          let qId = q?.id;
-
-          if(!qId) 
-            qId = await questions.add(format(replyTo.content), null);          
-
-          await answers.addFromQuestionId(qId, format(message.content), null);
+          try {
+            await learn(replyTo.content, message.content, null, null);
 
           console.log(`${getHorodateConsole()}\t[INFO]\tLearn from public channel !`);
-        }
+
+          } catch (error) {
+            console.log(`${getHorodateConsole()}\t[INFO]\tFailed to learn from public channel !`);            
+          }
+
       }
     }
 

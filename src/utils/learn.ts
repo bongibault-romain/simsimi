@@ -9,7 +9,7 @@ import { format } from "./formatMessages.js";
 
 const MAX_LENGTH = parseInt(process.env.MAX_LENGTH || "") || 400;
 
-export default async function learn(sentence: string, answer: string, emotion: Emotion | null, author: User) {
+export default async function learn(sentence: string, answer: string, emotion: Emotion | null, author: User | null) {
   const formatedSentence = format(sentence, { toLowerCase: true });
   const formatedAnswer = format(answer);
 
@@ -21,5 +21,5 @@ export default async function learn(sentence: string, answer: string, emotion: E
 
   if(await exists(formatedSentence, formatedAnswer, emotion)) throw new LearnAlreadyExistsError;
 
-  add(formatedSentence, formatedAnswer, emotion, author.id);
+  add(formatedSentence, formatedAnswer, emotion, author?.id || null);
 }

@@ -11,9 +11,9 @@ export class Get {
     })
     public async get(
         @SlashOption("question", {
+            description: "Question à laquelle je dois obtenir les réponses.",
             required: true,
             type: "STRING",
-            description: "Question à laquelle je dois obtenir les réponses.",
         })
         question: string,
         interaction: CommandInteraction
