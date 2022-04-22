@@ -6,7 +6,7 @@ import * as questions from "../database/questions.js";
 @Discord()
 export abstract class StatsCommand {
 
-    @Slash("stats", { description: "Affiche les statistiques de la bot" })
+    @Slash("stats", { description: "Pour afficher mes différentes statistiques." })
     private async stats(interaction: CommandInteraction) {
 
         return interaction.reply({
