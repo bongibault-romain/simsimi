@@ -86,15 +86,30 @@ export abstract class Reply {
             try {
               await learn(fastlearnData.question, message.content, null, message.author);
 
+              const responseEmbed = new MessageEmbed()
+                .setTitle("Merci pour ton aide !")
+                    .setDescription("Je viens d'apprendre une nouvelle phrase.")
+                    .setFields([
+                      {
+                        inline: true,
+                        name: "Lorsque l'on me dira",
+                        value: fastlearnData.question,
+                      },
+                      {
+                        inline: true,
+                        name: "Je répondrai peut-être",
+                        value: message.content,
+                      }
+                    ])
+                    .setColor("#ffcc00");
+
+              if(hasNitroEmotes(message.content)) 
+                responseEmbed.setFooter({
+                  text: "Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite."
+                });
+
               await message.reply({
-                embeds: [
-                  new MessageEmbed()
-                    .setTitle("Merci !")
-                    .setDescription(`Je viens de m'apprendre à répondre à \`${fastlearnData.question}\` par \`${message.content}\` !
-                    
-                    ${hasNitroEmotes(message.content) ? "**Attention, ton message contient un emoji Discord : Il risque de ne pas bien s'afficher par la suite.**" : ""}`)
-                    .setColor("#ffcc00"),
-                ]
+                embeds: [responseEmbed]
               });
 
               fastlearn.remove(message.reference.messageId);
