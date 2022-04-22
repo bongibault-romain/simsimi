@@ -57,9 +57,11 @@ export abstract class Reply {
     if(message.reference && !message.author.bot && !message.content.includes("@") && message.content.length > 0 && message.reference.messageId) {
       const channel = (await bot.channels.fetch(message.reference.channelId));
 
+      
       if(channel?.isText()) {
         const replyTo = await channel.messages.fetch(message.reference.messageId );
-
+        
+        if(await exists(replyTo.author.id)) return;
 
         if(format(replyTo.content).length > 0 && !format(replyTo.content).includes("@") && !replyTo.author.bot) 
 
