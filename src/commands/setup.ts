@@ -7,14 +7,13 @@ import { admins, guildOwner } from "../utils/permissionResolver.js";
 @Permission(false)
 @Permission(guildOwner)
 @Permission(admins)
-@SlashGroup({ description: "Configure le bot", name: "config" })
-@SlashGroup({ description: "Configure les permissions de configuration du bot", name: "permission", root: "config" })
-@SlashGroup({ description: "Configure les channels où le bot réponds aux messages.", name: "channel", root: "config" })
+@SlashGroup({ description: "Pour configurer mes différents paramètres.", name: "config" })
+@SlashGroup({ description: "Pour configurer les salons dans lesquels je pourrai interagir avec les membres.", name: "channel", root: "config" })
 export class Setup {
   @SlashGroup("channel", "config")
-  @Slash("remove", { description: "Configure le bot pour qu'il ne réponde plus à toutes les phrases de un salon" })
+  @Slash("remove", { description: "Pour définir les salons dans lesquels je peux interagir avec les membres." })
   private async remove(
-    @SlashOption("channel", { description: "Active ou désactive le bot dans ce salon", required: true, type: "CHANNEL" })
+    @SlashOption("channel", { description: "Salon dans lequel tu veux que je n'intéragisse plus avec les membres.", required: true, type: "CHANNEL" })
     channel: Channel,
     interaction: CommandInteraction) {
     if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
@@ -29,9 +28,9 @@ export class Setup {
 
   }
   @SlashGroup("channel", "config")
-  @Slash("add", { description: "Configure le bot pour qu'il réponde à toutes les phrases de un salon" })
+  @Slash("add", { description: "Salon dans lequel tu veux que j'interagisse avec les membres." })
   private async add(
-    @SlashOption("channel", { description: "Active ou désactive le bot dans ce salon", required: true, type: "CHANNEL" })
+    @SlashOption("channel", { description: "Salon dans lequel tu veux que j'intéragisse avec les membres.", required: true, type: "CHANNEL" })
     channel: Channel,
     interaction: CommandInteraction) {
     if (!interaction.channel) { await interaction.reply({ content: "Tu dois être dans un salon pour utiliser cette commande !", ephemeral: true }); return; }
