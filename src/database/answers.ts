@@ -1,13 +1,7 @@
+import { Answer } from "../typing/answer.js";
+import { decrypt, encrypt } from "../utils/encryption.js";
 import knex from "./knex.js";
 import * as questions from "./questions.js";
-
-export interface Answer {
-    id: number;
-    message: string;
-    question_id: number;
-    author_discord_id: string;
-    created_at: Date;
-}
 
 export async function countAll(): Promise<number> {
     return ((await knex.table("answers").count("* as count"))[0] as any).count;
@@ -18,10 +12,7 @@ export async function getAllFromQuestion(questionMessage: string): Promise<Answe
 
     if(!question) return [];
 
-    return (await knex.select("*").from("answers").where({ question_id: question.id })).map((answer: Answer) => ({
-        ...answer,
-        message: Buffer.from(answer.message, "base64").toString("utf8"),
-    }));
+    return decrypt((await knex.select("*").from("answers").where({ question_id: question.id })) as Answer[]);
 }
 
 export async function getFromQuestion(questionMessage: string, answerMessage: string): Promise<Answer | null> {
@@ -29,7 +20,7 @@ export async function getFromQuestion(questionMessage: string, answerMessage: st
 
     if(!question) return null;
 
-    return knex.select("*").from("answers").where({  message: Buffer.from(answerMessage, "utf8").toString("base64"), question_id: question.id }).first() || null;
+    return knex.select("*").from("answers").where({  message: encrypt(answerMessage), question_id: question.id }).first() || null;
 }
 
 export async function addFromQuestion(questionMessage: string, answerMessage: string, authorId: string | null) {
@@ -39,7 +30,7 @@ export async function addFromQuestion(questionMessage: string, answerMessage: st
     
     return knex.table("answers").insert({
         author_discord_id: authorId,
-        message: Buffer.from(answerMessage, "utf8").toString("base64"),
+        message: encrypt(answerMessage),
         question_id: question.id,
     });
 }
@@ -47,7 +38,7 @@ export async function addFromQuestion(questionMessage: string, answerMessage: st
 export async function addFromQuestionId(questionId: number, answerMessage: string, authorId: string | null) {
     return knex.table("answers").insert({
         author_discord_id: authorId,
-        message: Buffer.from(answerMessage, "utf8").toString("base64"),
+        message: encrypt(answerMessage),
         question_id: questionId,
     });
 }
@@ -66,7 +57,7 @@ export async function removeFromQuestion(questionMessage: string, answerMessage:
 
     if(!question) return;
 
-    return knex.table("answers").where({ message: Buffer.from(answerMessage, "utf8").toString("base64"), question_id: question.id }).delete();
+    return knex.table("answers").where({ message: encrypt(answerMessage), question_id: question.id }).delete();
 }
 
 export async function existsFromQuestion(questionMessage: string, answerMessage: string) {

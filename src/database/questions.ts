@@ -1,18 +1,14 @@
+import { Question } from "../typing/question.js";
 import knex from "./knex.js";
 
-export interface Question {
-    id: number;
-    message: string;
-    author_discord_id: string;
-    created_at: Date;
-}
+import { decrypt, encrypt } from "./../utils/encryption.js";
 
 export async function count(): Promise<number> {
   return ((await knex.table("questions").count("* as count"))[0] as any).count;
 }
 
 export async function get(question: string): Promise<Question | null> {
-  return knex.select("*").from("questions").where({ message: Buffer.from(question, "utf8").toString("base64") }).first() || null;
+  return knex.select("*").from("questions").where({ message: encrypt(question) }).first() || null;
 }
 
 export async function exists(question: string) {
@@ -20,10 +16,7 @@ export async function exists(question: string) {
 }
 
 export async function getAll(): Promise<Question[]> {
-    return (await knex.select("*").from("questions")).map((question: Question) => ({
-        ...question,
-        message: Buffer.from(question.message, "base64").toString("utf8"),
-    }));
+    return decrypt((await knex.select("*").from("questions")) as Question[]);
 }
 
 /**
@@ -35,10 +28,10 @@ export async function getAll(): Promise<Question[]> {
 export async function add(question: string, authorId: string | null): Promise<number> {
     return (await knex.table("questions").insert({ 
         author_discord_id: authorId,
-        message: Buffer.from(question, "utf8").toString("base64"),
+        message: encrypt(question),
     }))[0];
 }
 
 export async function remove(question: string) {
-    return knex.table("questions").where({ message: Buffer.from(question, "utf8").toString("base64") }).delete();
+    return knex.table("questions").where({ message: encrypt(question) }).delete();
 }
