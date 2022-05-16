@@ -1,6 +1,5 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
-import { getAllFromQuestion } from "../database/answers.js";
 import { get } from "../database/sentences.js";
 import { format } from "../utils/formatMessages.js";
 
