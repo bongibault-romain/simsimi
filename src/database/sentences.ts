@@ -39,6 +39,7 @@ export async function get(question: string) {
 
     return foundAnwsers.length > 0 ? foundAnwsers.map((a) => ({
       emotion: a.emotion as Emotion | null,
+      id: a.id,
       message:  Buffer.from(a.message, "base64").toString("utf8"),
     })) : null;
   }
@@ -54,6 +55,7 @@ export async function get(question: string) {
       question_id: selectedQuestion.id
     })).map(a => ({
       emotion: a.emotion as Emotion | null,
+      id: a.id,
       message: Buffer.from(a.message, "base64").toString("utf8"),
     }));
     
