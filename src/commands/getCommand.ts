@@ -1,6 +1,6 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
-import { get } from "../database/sentences.js";
+import { getAll } from "../database/sentences.js";
 import { format } from "../utils/formatMessages.js";
 
 @Discord()
@@ -22,7 +22,7 @@ export class Get {
             ephemeral: true,
         });
 
-        const answers = await get(format(question, { toLowerCase: true }));
+        const answers = await getAll(format(question, { toLowerCase: true }));
 
         if(answers !== null && answers.length > 0) 
             interaction.editReply({
