@@ -2,7 +2,6 @@
 import { Question } from "./../typing/question";
 import { Answer } from "./../typing/answer";
 
-
 export function encrypt (question: Question): Question;
 export function encrypt (answer: Answer): Answer;
 export function encrypt (answers: Answer[]): Answer[];
@@ -39,8 +38,3 @@ export function decrypt(data: Question | Answer | Answer[] | Question[] | string
     data.message = decrypt(data.message);
     return data;
 }
-
-
-// export function encrypt (data: Question | Answer | Question[] | Answer[]): {
-
-// }
